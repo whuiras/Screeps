@@ -1,3 +1,9 @@
+
+/.*
+/package.json
+/rollup.config.js
+/tsconfig.*
+
 # yarn lock file
 /yarn.lock
 
