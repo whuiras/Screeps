@@ -11,4 +11,17 @@ export const loop = ErrorMapper.wrapLoop(() => {
       delete Memory.creeps[name];
     }
   }
+
+  // Assign main algorithm
+  let mainStrategy;
+  if (Object.keys(Game.rooms).length === 1) {
+    const roomController = Game.rooms[0].controller
+    if (roomController !== undefined && roomController.level === 1) {
+      mainStrategy = new BootstrapStrategy();
+    }
+
+  } else {
+    mainStrategy = new RunStrategy();
+  }
+
 });
