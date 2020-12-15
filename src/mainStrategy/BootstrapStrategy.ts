@@ -4,6 +4,7 @@ import { Stage1Upkeep } from "../Bootstrap/Stage1/Stage1Upkeep";
 import { Stage1Main } from "../Bootstrap/Stage1/Stage1Main";
 import { Stage2Upkeep } from "../Bootstrap/Stage2/Stage2Upkeep";
 import { Stage2Main } from "../Bootstrap/Stage2/Stage2Main";
+import { AbstractStrategy } from "./AbstractStrategy";
 
 /**
  * The Bootstrap strategy runs on respawn (specifically when only 1 room is controlled, and it level 1)
@@ -30,8 +31,9 @@ export class BootstrapStrategy extends AbstractStrategy {
   }
 
   public execute(): void {
-    if (Game.rooms[0].controller) {
-      switch (Game.rooms[0].controller.level) {
+    if (Memory.rooms[0].controller) {
+
+      switch (Memory.rooms[0].controller.level) {
         case 1:
           this.upkeep = this.stage1Upkeep
           this.main = this.stage1Main

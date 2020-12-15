@@ -11,7 +11,7 @@ export class Stage1Upkeep extends AbstractBootUpkeep{
       const newName = 'Worker' + Game.time.toString()
       console.log('Spawning new worker: ' + newName);
       Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE], newName,
-        {memory: {role: 'worker'} });
+        {memory: {role: 'worker', upgrading: false} });
     }
 
 

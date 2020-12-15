@@ -1,4 +1,4 @@
-abstract class AbstractStrategy {
+export abstract class AbstractStrategy {
 
   protected constructor() {
     //

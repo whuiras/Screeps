@@ -1,6 +1,7 @@
 import { ErrorMapper } from "utils/ErrorMapper";
 import {BootstrapStrategy} from "./mainStrategy/BootstrapStrategy";
 import {RunStrategy} from "./mainStrategy/RunStrategy";
+import { AbstractStrategy } from "./mainStrategy/AbstractStrategy";
 
 // When compiling TS to JS and bundling with rollup, the line numbers and file names in error messages change
 // This utility uses source maps to get the line numbers and file names of the original, TS source code
@@ -14,11 +15,18 @@ export const loop = ErrorMapper.wrapLoop(() => {
     }
   }
 
+  for (let i = 0; i < Object.keys(Game.rooms).length; i++) {
+    Memory.rooms[i] = Object.values(Game.rooms)[i]
+  }
+
+
   // Assign main algorithm
   let mainStrategy:AbstractStrategy = new RunStrategy()
   if (Object.keys(Game.rooms).length === 1) {
-    const roomController = Game.rooms[0].controller
-    if (roomController !== undefined && roomController.level <= 4) {
+    const room = Object.values(Game.rooms).find((r) => r.controller && r.controller.my)
+
+    if (room !== undefined && room.controller !== undefined && room.controller.level <= 4) {
+      console.log("Bootstrapping")
       mainStrategy = new BootstrapStrategy()
     }
 
