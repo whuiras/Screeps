@@ -15,10 +15,10 @@ export const loop = ErrorMapper.wrapLoop(() => {
   }
 
   // Assign main algorithm
-  let mainStrategy:AbstractMainStrategy = new RunStrategy()
+  let mainStrategy:AbstractStrategy = new RunStrategy()
   if (Object.keys(Game.rooms).length === 1) {
     const roomController = Game.rooms[0].controller
-    if (roomController !== undefined && roomController.level === 1) {
+    if (roomController !== undefined && roomController.level <= 4) {
       mainStrategy = new BootstrapStrategy()
     }
 

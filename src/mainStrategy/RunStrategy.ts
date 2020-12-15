@@ -1,4 +1,4 @@
-export class RunStrategy extends AbstractMainStrategy {
+export class RunStrategy extends AbstractStrategy {
   public constructor() {
     super();
   }
