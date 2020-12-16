@@ -39,15 +39,9 @@ export class BootstrapStrategy extends AbstractStrategy {
           this.main = this.stage1Main
           break;
 
-        case 2:
-          this.upkeep = this.stage2Upkeep
-          this.main = this.stage2Main
-          break;
-
-        case 3:
-          break;
-
         default:
+          this.upkeep = this.stage1Upkeep
+          this.main = this.stage1Main
           break;
       }
 

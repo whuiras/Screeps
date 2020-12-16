@@ -4,23 +4,23 @@ import { Stage1Main } from "./Stage1/Stage1Main";
 
 export abstract class AbstractBootUpkeep {
 
-  public workers : Creep[]
-  public harvesters : Creep[]
+  public workers: Creep[];
+  public minWorkers: number;
+  public harvesters: Creep[];
 
 
   public constructor() {
-    this.workers = []
-    this.harvesters = []
+    this.workers = [];
+    this.harvesters = [];
+    this.minWorkers = 4
   }
 
 
-  public abstract run():void
+  public abstract run(): void
 
-  public updateCreeps():void {
-    this.workers = _.filter(Game.creeps, (creep) => creep.memory.role === 'worker');
+  public updateCreeps(): void {
+    this.workers = _.filter(Game.creeps, (creep) => creep.memory.role === "worker");
 
   }
-
-
 
 }
