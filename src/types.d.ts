@@ -9,8 +9,22 @@ interface CreepMemory {
 interface Memory {
   uuid: number;
   log: any;
-  rooms: Room[]
+  rooms: RoomMemory[]
 }
+
+interface RoomMemory {
+  id: string
+  lastUpdated: number
+  sources: SourceMemory[]
+  spawn: string
+}
+
+interface SourceMemory {
+  id: string
+  availableWorkers: number
+  currentWorkers: number
+}
+
 
 // `global` extension samples
 declare namespace NodeJS {
