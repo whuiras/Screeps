@@ -4,6 +4,13 @@
  * Some of these functions could be moved to a utils dir and imported, see: isInBounds()
  */
 
+enum Period {
+  EVERY = 1,
+  SHORT = 10,
+  LONG = 100,
+}
+
+
 export class MemoryHandler {
 
 
@@ -13,10 +20,39 @@ export class MemoryHandler {
 
   }
 
-  private updateRooms(): void {
-    for (let i = 0; i < Object.keys(Game.rooms).length; i++) {
-      Memory.rooms[i] = Object.values(Game.rooms)[i];
+  /**
+   * Updates memory for all rooms
+   * @private
+   */
+  public updateRooms(): void {
+    const numRooms = Object.keys(Game.rooms).length
+
+    for (let i = 0; i < numRooms; i++) {
+      const roomMem = Memory.rooms[i]
+      const room = Object.values(Game.rooms)[i]
+
+      // There might be a better way of doing this than just a straight, 'has this been init' flag.
+      if (!roomMem.init) {
+        this.initRoomMem(roomMem, room)
+      }
+
     }
+  }
+
+  /**
+   * Initializes memory for a specific room. Updates fields like 'id' that are only set once.
+   * @param roomMem Location in memory of the room
+   * @param room Room game object we are going to init
+   * @private
+   */
+  private initRoomMem(roomMem: RoomMemory, room: Room): void {
+    roomMem.id = room.name
+    const controller = room.controller
+    if (controller !== undefined) {
+      roomMem.controller = controller.id
+    }
+    roomMem.maxHarvesters = this.calcMaxRoomHarvesters(room)
+    roomMem.init = true
   }
 
   private deleteCreepMem(): void {
@@ -69,8 +105,6 @@ export class MemoryHandler {
     }
     return sum
   }
-
-
 
 
 }
