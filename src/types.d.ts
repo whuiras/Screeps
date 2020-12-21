@@ -13,10 +13,13 @@ interface Memory {
 }
 
 interface RoomMemory {
+  init: boolean
   id: string
   lastUpdated: number
   sources: SourceMemory[]
   spawn: string
+  controller: string
+  maxHarvesters: number
 }
 
 interface SourceMemory {
