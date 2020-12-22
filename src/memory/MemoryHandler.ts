@@ -119,7 +119,6 @@ export class MemoryHandler {
       dx = temp
       dy = -dy
     }
-    console.log(sum)
     return sum
   }
 
