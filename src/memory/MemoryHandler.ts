@@ -25,27 +25,38 @@ export class MemoryHandler {
    * @private
    */
   public updateRooms(): void {
+
+    if (Memory.initRoom === undefined) {
+      Memory.initRoom = {} as RoomMemory
+      // Memory.initRoom = Object.create({}) as RoomMemory
+      this.initRoomMem(Memory.initRoom, Object.values(Game.rooms)[0])
+      console.log(Memory.initRoom)
+      console.log(typeof Memory.initRoom)
+
+      Memory.rooms = []
+    }
+
     const numRooms = Object.keys(Game.rooms).length
-
     for (let i = 0; i < numRooms; i++) {
-      const roomMem = Memory.rooms[i]
-      const room = Object.values(Game.rooms)[i]
-
       // There might be a better way of doing this than just a straight, 'has this been init' flag.
-      if (!roomMem.init) {
-        this.initRoomMem(roomMem, room)
-      }
-
+      Memory.rooms[i] = {} as RoomMemory
+      this.initRoomMem(Memory.rooms[i], Object.values(Game.rooms)[i])
     }
   }
 
   /**
    * Initializes memory for a specific room. Updates fields like 'id' that are only set once.
-   * @param roomMem Location in memory of the room
+   * @param roomMemBox
    * @param room Room game object we are going to init
    * @private
    */
-  private initRoomMem(roomMem: RoomMemory, room: Room): void {
+  private initRoomMem(roomMem: RoomMemory, room: Room) {
+    if (roomMem === undefined) {
+      roomMem = { controller: "", id: "", init: false, lastUpdated: 0, maxHarvesters: 0, sources: [], spawn: "" }
+    }
+    if (roomMem.init) {
+      return
+    }
     roomMem.id = room.name
     const controller = room.controller
     if (controller !== undefined) {

@@ -31,17 +31,18 @@ export class BootstrapStrategy extends AbstractStrategy {
   }
 
   public execute(): void {
-    if (Memory.rooms[0].controller) {
+    const controller = Game.getObjectById(Memory.initRoom.controller as Id<StructureController>);
+    if (controller) {
 
-      switch (Memory.rooms[0].controller.level) {
+      switch (controller.level) {
         case 1:
-          this.upkeep = this.stage1Upkeep
-          this.main = this.stage1Main
+          this.upkeep = this.stage1Upkeep;
+          this.main = this.stage1Main;
           break;
 
         default:
-          this.upkeep = this.stage1Upkeep
-          this.main = this.stage1Main
+          this.upkeep = this.stage1Upkeep;
+          this.main = this.stage1Main;
           break;
       }
 
@@ -50,5 +51,5 @@ export class BootstrapStrategy extends AbstractStrategy {
 
     }
   }
-
 }
+

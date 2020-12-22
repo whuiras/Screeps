@@ -9,6 +9,7 @@ interface CreepMemory {
 interface Memory {
   uuid: number;
   log: any;
+  initRoom: RoomMemory
   rooms: RoomMemory[]
 }
 
