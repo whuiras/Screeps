@@ -10,9 +10,28 @@ export class RoomPlanner {
 
   public planRoom(): void {
     //
+    const POI: number[] = this.findPOI(25, 25, 5)
   }
 
-  private findPOI(): [number, number] {
+  /**
+   * This function scans then entire room and returns the (x,y) coordinate of where a base should be located
+   * @private
+   */
+  private findPOI(x: number, y: number, windowSize: number): number[] {
+    const pairs =[]
+    const scoredPairs = []
+
+    if (windowSize < 1) {
+      return []
+    }
+
+    const coords = this.genPOICoords(x, y, windowSize)
+    for (const coord of coords) {
+      // check the core of the base (no walls allowed)
+      if(this.sumWallTiles(coord[0], coord[1], 0, 4) === 0) {
+        scoredPairs.push(coord[0], coord[1], this.sumWallTiles(coord[0], coord[1], 4, 14))
+      }
+    }
 
 
     return [0, 0];
@@ -26,8 +45,7 @@ export class RoomPlanner {
    * @param end ending distance from the origin
    * @private
    */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private calcWallDensity(x: number, y: number, start: number, end: number): number {
+  private sumWallTiles(x: number, y: number, start: number, end: number): number {
     let wallScore = 0;
 
     for (let i = start; i === end; i++) {
@@ -74,7 +92,7 @@ export class RoomPlanner {
    * @private
    */
   private genSymmSumCoords(distance: number): number[][] {
-    const pairs = []
+    const pairs: number[][] = []
     // first go across
     for(let x = 0; x < distance+1; x++) {
       pairs.push([x, distance])
@@ -85,6 +103,48 @@ export class RoomPlanner {
     }
 
     return pairs
+  }
+
+  /**
+   * Generates an array of candidate POI's from around an origin point, a specified distance apart
+   * @param x The x coord
+   * @param y The y coord
+   * @param windowSize The distance between points
+   * @private
+   */
+  private genPOICoords(x: number, y: number, windowSize: number): number[][] {
+    const pairs: number[][] = []
+
+    // first navigate to the top right candidate so we can simplify our loops (this is a little scrappy)
+    let newX: number = x
+    let newY: number = y
+
+    while (this.inBounds(newX, newY)) {
+      newX -= windowSize
+    }
+    while (this.inBounds(newX, newY)) {
+      newY -= windowSize
+    }
+
+    // Now we can iterate through two, cleaner loops
+    pairs.push([newX, newY])
+    for (let i = newX; i < 44; i += windowSize) {
+      for (let j = newY; j < 44; j += windowSize) {
+        pairs.push([i,j])
+      }
+    }
+
+    return pairs
+  }
+
+  /**
+   * Returns true if a coordinate is in bounds per POI purposes
+   * @param x The x coord
+   * @param y The y coord
+   * @private
+   */
+  private inBounds(x: number, y: number) {
+    return (x > 5 && x < 44 && y > 5 && y < 44)
   }
 
 }
