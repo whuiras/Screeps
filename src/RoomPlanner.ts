@@ -18,8 +18,7 @@ export class RoomPlanner {
    * @private
    */
   private findPOI(x: number, y: number, windowSize: number): number[] {
-    const pairs =[]
-    const scoredPairs = []
+    let scoredPairs: number[][] = []
 
     if (windowSize < 1) {
       return []
@@ -27,14 +26,28 @@ export class RoomPlanner {
 
     const coords = this.genPOICoords(x, y, windowSize)
     for (const coord of coords) {
-      // check the core of the base (no walls allowed)
+      // check the core of the base (no walls allowed in the core)
       if(this.sumWallTiles(coord[0], coord[1], 0, 4) === 0) {
-        scoredPairs.push(coord[0], coord[1], this.sumWallTiles(coord[0], coord[1], 4, 14))
+        scoredPairs.push([coord[0], coord[1], this.sumWallTiles(coord[0], coord[1], 4, 14)])
       }
     }
+    scoredPairs = scoredPairs.sort(function(a, b) {
+      return b[0] - a[0];
+    });
 
+    // grab top 3 candidates and recursively get better POI's
+    let newPairs = []
+    newPairs.push(this.findPOI(scoredPairs[0][0], scoredPairs[0][0], windowSize-1))
+    newPairs.push(this.findPOI(scoredPairs[1][0], scoredPairs[1][0], windowSize-1))
+    newPairs.push(this.findPOI(scoredPairs[2][0], scoredPairs[2][0], windowSize-1))
 
-    return [0, 0];
+    newPairs = newPairs.sort(function(a, b) {
+      return b[0] - a[0];
+    });
+
+    const bestCoord = newPairs[0]
+    
+    return bestCoord;
   }
 
   /**
