@@ -3,6 +3,8 @@ import {BootstrapStrategy} from "./mainStrategy/BootstrapStrategy";
 import {RunStrategy} from "./mainStrategy/RunStrategy";
 import { AbstractStrategy } from "./mainStrategy/AbstractStrategy";
 import { MemoryHandler } from "./memory/MemoryHandler";
+import { log } from "./types";
+
 
 const memoryHandler : MemoryHandler = new MemoryHandler()
 
@@ -19,7 +21,7 @@ export const loop = ErrorMapper.wrapLoop(() => {
   if (Object.keys(Game.rooms).length === 1) {
     const room = Object.values(Game.rooms).find((r) => r.controller && r.controller.my)
 
-    if (room !== undefined && room.controller !== undefined && room.controller.level <= 4) {
+    if (room !== undefined && room.controller !== undefined && room.controller.level <= 9) {
       console.log("Bootstrapping")
       mainStrategy = new BootstrapStrategy()
     }

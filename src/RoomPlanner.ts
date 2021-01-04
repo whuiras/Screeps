@@ -1,3 +1,5 @@
+
+
 export class RoomPlanner {
 
   private room: Room;
@@ -31,6 +33,9 @@ export class RoomPlanner {
         scoredPairs.push([coord[0], coord[1], this.sumWallTiles(coord[0], coord[1], 4, 14)])
       }
     }
+
+    log.debug("")
+
     scoredPairs = scoredPairs.sort(function(a, b) {
       return b[0] - a[0];
     });
@@ -46,7 +51,7 @@ export class RoomPlanner {
     });
 
     const bestCoord = newPairs[0]
-    
+
     return bestCoord;
   }
 

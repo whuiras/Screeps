@@ -1,4 +1,7 @@
-// example declaration file - remove these and add your own custom typings
+import { Logger } from "tslog";
+
+export const log: Logger
+
 
 // memory extension samples
 interface CreepMemory {
@@ -30,9 +33,3 @@ interface SourceMemory {
 }
 
 
-// `global` extension samples
-declare namespace NodeJS {
-  interface Global {
-    log: any;
-  }
-}
