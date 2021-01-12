@@ -3,7 +3,6 @@ import {BootstrapStrategy} from "./mainStrategy/BootstrapStrategy";
 import {RunStrategy} from "./mainStrategy/RunStrategy";
 import { AbstractStrategy } from "./mainStrategy/AbstractStrategy";
 import { MemoryHandler } from "./memory/MemoryHandler";
-import { log } from "./types";
 
 
 const memoryHandler : MemoryHandler = new MemoryHandler()

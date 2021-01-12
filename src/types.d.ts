@@ -1,6 +1,4 @@
-import { Logger } from "tslog";
 
-export const log: Logger
 
 
 // memory extension samples

@@ -34,7 +34,6 @@ export class RoomPlanner {
       }
     }
 
-    log.debug("")
 
     scoredPairs = scoredPairs.sort(function(a, b) {
       return b[0] - a[0];
