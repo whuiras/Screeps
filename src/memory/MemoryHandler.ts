@@ -3,13 +3,7 @@
  *
  * Some of these functions could be moved to a utils dir and imported, see: isInBounds()
  */
-
-enum Period {
-  EVERY = 1,
-  SHORT = 10,
-  LONG = 100,
-}
-
+import { RoomPlanner } from "../RoomPlanner";
 
 export class MemoryHandler {
 
@@ -64,6 +58,9 @@ export class MemoryHandler {
       roomMem.controller = controller.id
     }
     roomMem.maxHarvesters = this.calcMaxRoomHarvesters(room)
+
+    const roomPlanner: RoomPlanner = new RoomPlanner(room.name as Id<Room>)
+    roomPlanner.planRoom()
     roomMem.init = true
   }
 
