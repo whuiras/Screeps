@@ -18,6 +18,9 @@ export class RoomPlanner {
 
   /**
    * This function scans then entire room and returns the (x,y) coordinate of where a base should be located
+   * @param x The x origin we are find POI around
+   * @param y The y origin we are find POI around
+   * @param windowSize The size of the area we are finding POI in
    * @private
    */
   private findPOI(x: number, y: number, windowSize: number): number[] {
