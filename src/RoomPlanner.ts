@@ -14,10 +14,15 @@ export class RoomPlanner {
   public planRoom(): void {
     //
     const POI: number[] = this.findPOI(25, 25, 5)
+    console.log(" ")
+    console.log("POI is: ")
+    console.log(POI[0], POI[1])
+    console.log(" ")
   }
 
   /**
    * This function scans then entire room and returns the (x,y) coordinate of where a base should be located
+   * NOTE: This is incredibly expensive, though it only runs once per room
    * @param x The x origin we are find POI around
    * @param y The y origin we are find POI around
    * @param windowSize The size of the area we are finding POI in
@@ -31,6 +36,8 @@ export class RoomPlanner {
     }
 
     const coords = this.genPOICoords(x, y, windowSize)
+    if (windowSize === 5)
+      console.log(coords)
     for (const coord of coords) {
       // check the core of the base (no walls allowed in the core)
       if(this.sumWallTiles(coord[0], coord[1], 0, 4) === 0) {
@@ -139,18 +146,16 @@ export class RoomPlanner {
     // first navigate to the top right candidate so we can simplify our loops (this is a little scrappy)
     let newX: number = x
     let newY: number = y
-
-    while (this.inBounds(newX, newY)) {
+    while (this.inBounds(newX - windowSize, y)) {
       newX -= windowSize
     }
-    while (this.inBounds(newX, newY)) {
+    while (this.inBounds(x, newY - windowSize)) {
       newY -= windowSize
     }
 
     // Now we can iterate through two, cleaner loops
-    pairs.push([newX, newY])
-    for (let i = newX; i < 44; i += windowSize) {
-      for (let j = newY; j < 44; j += windowSize) {
+    for (let i = newX; i < 45; i += windowSize) {
+      for (let j = newY; j < 45; j += windowSize) {
         pairs.push([i,j])
       }
     }
@@ -165,7 +170,7 @@ export class RoomPlanner {
    * @private
    */
   private inBounds(x: number, y: number) {
-    return (x > 5 && x < 44 && y > 5 && y < 44)
+    return (x >= 5 && x <= 45 && y >= 5 && y <= 45)
   }
 
 }
