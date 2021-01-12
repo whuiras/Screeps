@@ -1,7 +1,3 @@
-
-
-
-// memory extension samples
 interface CreepMemory {
   role: string;
   upgrading?: boolean
@@ -9,7 +5,7 @@ interface CreepMemory {
 
 interface Memory {
   uuid: number;
-  log: any;
+  initialized: boolean
   initRoom: RoomMemory
   rooms: RoomMemory[]
 }

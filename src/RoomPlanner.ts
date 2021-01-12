@@ -1,3 +1,4 @@
+import { Logger } from "./Logger";
 
 
 export class RoomPlanner {

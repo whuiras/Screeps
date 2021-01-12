@@ -3,6 +3,7 @@ import {BootstrapStrategy} from "./mainStrategy/BootstrapStrategy";
 import {RunStrategy} from "./mainStrategy/RunStrategy";
 import { AbstractStrategy } from "./mainStrategy/AbstractStrategy";
 import { MemoryHandler } from "./memory/MemoryHandler";
+import { Logger } from "./Logger";
 
 
 const memoryHandler : MemoryHandler = new MemoryHandler()
@@ -11,6 +12,11 @@ export const loop = ErrorMapper.wrapLoop(() => {
 
   if (Game.time % 10 === 0) {
     console.log(`Current game tick is ${Game.time}`)
+  }
+
+  if (Memory.initialized !== true) {
+    const logger = new Logger(3)
+    Memory.initialized = true
   }
 
   memoryHandler.updateMemory()
