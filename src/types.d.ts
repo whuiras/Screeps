@@ -18,6 +18,17 @@ interface RoomMemory {
   spawn: string
   controller: string
   maxHarvesters: number
+  roomPlan: RoomPlanMemory
+}
+
+interface RoomPlanMemory {
+  containers: number[][]
+  extensions: number[][]
+  roads: number[][]
+  towers: number[][]
+  walls: number[][]
+  ramparts: number[][]
+  storage: number[]
 }
 
 interface SourceMemory {
