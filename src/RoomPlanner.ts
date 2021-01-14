@@ -13,10 +13,10 @@ export class RoomPlanner {
     //
     console.log(" ")
     console.log(" ")
-    const POI: number[] = this.findPOI(25, 25, 3)
+    const POI: number[] = this.findPOI(25, 25, 5)
     console.log(" ")
     console.log("POI is: ")
-    console.log(POI[0], POI[1])
+    // console.log(POI[0], POI[1])
     console.log(" ")
     console.log(" ")
 
@@ -45,14 +45,14 @@ export class RoomPlanner {
       console.log(coords)
     for (const coord of coords) {
       // check the core of the base (no walls allowed in the core)
-      if(this.sumWallTiles(coord[0], coord[1], 0, 4) === 0) {
-        scoredPairs.push([coord[0], coord[1], this.sumWallTiles(coord[0], coord[1], 4, 14)])
+      if(this.sumWallTiles(coord[0], coord[1], 0, 2) === 0) {
+        scoredPairs.push([coord[0], coord[1], this.sumWallTiles(coord[0], coord[1], 2, 5)])
       }
     }
 
 
     scoredPairs = scoredPairs.sort(function(a, b) {
-      return b[2] - a[2];
+      return a[2] - b[2];
     });
 
     if (windowSize === 5) {
@@ -61,13 +61,13 @@ export class RoomPlanner {
     }
 
     // grab top 3 candidates and recursively get better POI's
-    let newPairs = []
+    let newPairs : number[][] = []
     newPairs.push(this.findPOI(scoredPairs[0][0], scoredPairs[0][1], windowSize-2))
-    newPairs.push(this.findPOI(scoredPairs[1][0], scoredPairs[1][1], windowSize-2))
-    newPairs.push(this.findPOI(scoredPairs[2][0], scoredPairs[2][1], windowSize-2))
+    // newPairs.push(this.findPOI(scoredPairs[1][0], scoredPairs[1][1], windowSize-2))
+    // newPairs.push(this.findPOI(scoredPairs[2][0], scoredPairs[2][1], windowSize-2))
 
     newPairs = newPairs.sort(function(a, b) {
-      return b[2] - a[2];
+      return a[2] - b[2];
     });
 
     const bestCoord = newPairs[0]
@@ -91,10 +91,6 @@ export class RoomPlanner {
     let wallScore = 0;
     for (let i = start; i <= end; i++) {
       const coords = this.genSymmSumCoords(i)
-      if (y === 31) {
-        console.log("y is 31, coordinates are: ")
-        console.log(coords)
-      }
       for (const coord of coords) {
         wallScore += this.symmSumTerrain(x, y, coord[0], coord[1])
       }
@@ -146,9 +142,6 @@ export class RoomPlanner {
       dy = dx;
       dx = temp;
       dy = -dy;
-    }
-    if (y === 31) {
-      console.log("sum is: " + sum.toString())
     }
 
     return sum;
@@ -210,7 +203,7 @@ export class RoomPlanner {
    * @private
    */
   private inBounds(x: number, y: number) {
-    return (x >= 5 && x <= 45 && y >= 5 && y <= 45)
+    return (x >= 14 && x <= 35 && y >= 14 && y <= 35)
   }
 
 }
