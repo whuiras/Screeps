@@ -3,20 +3,25 @@ import { Logger } from "./Logger";
 
 export class RoomPlanner {
 
-  private room: Room;
   private roomID: Id<Room>;
 
   public constructor(roomID: Id<Room>) {
-    this.room = Game.getObjectById(roomID) as Room;
     this.roomID = roomID;
   }
 
   public planRoom(): void {
     //
-    const POI: number[] = this.findPOI(25, 25, 5)
+    console.log(" ")
+    console.log(" ")
+    const POI: number[] = this.findPOI(25, 25, 3)
     console.log(" ")
     console.log("POI is: ")
     console.log(POI[0], POI[1])
+    console.log(" ")
+    console.log(" ")
+
+    //console.log("sumWallTiles test: ")
+    //console.log(this.sumWallTiles(18,31, 0, 3))
     console.log(" ")
   }
 
@@ -47,20 +52,29 @@ export class RoomPlanner {
 
 
     scoredPairs = scoredPairs.sort(function(a, b) {
-      return b[0] - a[0];
+      return b[2] - a[2];
     });
+
+    if (windowSize === 5) {
+      console.log('scored pairs are: ')
+      console.log(scoredPairs)
+    }
 
     // grab top 3 candidates and recursively get better POI's
     let newPairs = []
-    newPairs.push(this.findPOI(scoredPairs[0][0], scoredPairs[0][0], windowSize-1))
-    newPairs.push(this.findPOI(scoredPairs[1][0], scoredPairs[1][0], windowSize-1))
-    newPairs.push(this.findPOI(scoredPairs[2][0], scoredPairs[2][0], windowSize-1))
+    newPairs.push(this.findPOI(scoredPairs[0][0], scoredPairs[0][1], windowSize-2))
+    newPairs.push(this.findPOI(scoredPairs[1][0], scoredPairs[1][1], windowSize-2))
+    newPairs.push(this.findPOI(scoredPairs[2][0], scoredPairs[2][1], windowSize-2))
 
     newPairs = newPairs.sort(function(a, b) {
-      return b[0] - a[0];
+      return b[2] - a[2];
     });
 
     const bestCoord = newPairs[0]
+
+    if (windowSize === 5) {
+      console.log('best coord is: ' + bestCoord.toString())
+    }
 
     return bestCoord;
   }
@@ -75,9 +89,12 @@ export class RoomPlanner {
    */
   private sumWallTiles(x: number, y: number, start: number, end: number): number {
     let wallScore = 0;
-
-    for (let i = start; i === end; i++) {
+    for (let i = start; i <= end; i++) {
       const coords = this.genSymmSumCoords(i)
+      if (y === 31) {
+        console.log("y is 31, coordinates are: ")
+        console.log(coords)
+      }
       for (const coord of coords) {
         wallScore += this.symmSumTerrain(x, y, coord[0], coord[1])
       }
@@ -96,14 +113,33 @@ export class RoomPlanner {
    * @private
    */
   private symmSumTerrain(x: number, y: number, dx: number, dy: number, terrainType: number = TERRAIN_MASK_WALL): number {
-    let sum = 0;
+    let sum = 0
+    const room = Game.rooms[this.roomID]
+
+    if (room === null) {
+      Logger.logError("symmSumTerrain received null room")
+      return 0
+    }
+
+    // early stop if dx and dy are 0
+    if (dx === 0 && dy === 0) {
+      if (room) {
+        const terrain = room.getTerrain().get(x, y)
+        if (terrain === terrainType) {
+          sum++;
+        }
+      }
+      return sum
+    }
 
     for (let i = 0; i < 4; i++) {
       const candidateX = x + dx;
       const candidateY = y + dy;
-      const terrain = this.room.getTerrain().get(candidateX, candidateY)
-      if (terrain === terrainType) {
-        sum++;
+      if (room) {
+        const terrain = room.getTerrain().get(candidateX, candidateY)
+        if (terrain === terrainType) {
+          sum++;
+        }
       }
 
       const temp = dy;
@@ -111,6 +147,10 @@ export class RoomPlanner {
       dx = temp;
       dy = -dy;
     }
+    if (y === 31) {
+      console.log("sum is: " + sum.toString())
+    }
+
     return sum;
   }
 
