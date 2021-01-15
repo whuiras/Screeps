@@ -11,13 +11,13 @@ export class RoomPlanner {
 
   public planRoom(): void {
     //
-    console.log(" ")
-    console.log(" ")
-    const POI: number[] = this.findPOI(25, 25, 5)
-    console.log(" ")
-    console.log("POI is: ")
-    console.log(POI[0], POI[1])
-    console.log(" ")
+    console.log(" ");
+    console.log(" ");
+    const POI: number[] = this.findPOI(25, 25, 5);
+    console.log(" ");
+    console.log("POI is: ");
+    console.log(POI[0], POI[1]);
+    console.log(" ");
   }
 
   /**
@@ -29,28 +29,28 @@ export class RoomPlanner {
    * @private
    */
   private findPOI(x: number, y: number, windowSize: number): number[] {
-    let scoredPairs: number[][] = []
+    let scoredPairs: number[][] = [];
 
     if (windowSize < 1) {
-      return [x, y, this.sumWallTiles(x, y, 0, 5)]
+      return [x, y, this.sumWallTiles(x, y, 0, 5)];
     }
 
-    const coords = this.genPOICoords(x, y, windowSize)
+    const coords = this.genPOICoords(x, y, windowSize);
     
     for (const coord of coords) {
       // check the core of the base (no walls allowed in the core)
-      const innerSum = this.sumWallTiles(coord[0], coord[1], 0, 2)
-      if(innerSum === 0) {
-        const outerSum = this.sumWallTiles(coord[0], coord[1], 2, 6)
-        console.log("=====")
-        console.log(coord)
-        console.log(outerSum)
-        console.log("=====")
+      const innerSum = this.sumWallTiles(coord[0], coord[1], 0, 2);
+      if (innerSum === 0) {
+        const outerSum = this.sumWallTiles(coord[0], coord[1], 2, 6);
+        console.log("=====");
+        console.log(coord);
+        console.log(outerSum);
+        console.log("=====");
         // early stop if we have a perfect POI
-        if(outerSum === 0) {
-          return [coord[0], coord[1], 0]
+        if (outerSum === 0) {
+          return [coord[0], coord[1], 0];
         }
-        scoredPairs.push([coord[0], coord[1], outerSum])
+        scoredPairs.push([coord[0], coord[1], outerSum]);
       }
     }
 
@@ -60,8 +60,8 @@ export class RoomPlanner {
     });
 
     // grab top 3 candidates and recursively get better POI's
-    let newPairs : number[][] = []
-    newPairs.push(this.findPOI(scoredPairs[0][0], scoredPairs[0][1], windowSize-2))
+    let newPairs: number[][] = [];
+    newPairs.push(this.findPOI(scoredPairs[0][0], scoredPairs[0][1], windowSize - 2));
     // newPairs.push(this.findPOI(scoredPairs[1][0], scoredPairs[1][1], windowSize-2))
     // newPairs.push(this.findPOI(scoredPairs[2][0], scoredPairs[2][1], windowSize-2))
 
@@ -69,7 +69,7 @@ export class RoomPlanner {
       return a[2] - b[2];
     });
 
-    const bestCoord = newPairs[0]
+    const bestCoord = newPairs[0];
 
     // console.log('best coord is: ' + bestCoord.toString())
 
@@ -87,9 +87,9 @@ export class RoomPlanner {
   private sumWallTiles(x: number, y: number, start: number, end: number): number {
     let wallScore = 0;
     for (let i = start; i <= end; i++) {
-      const coords = this.genSymmSumCoords(i)
+      const coords = this.genSymmSumCoords(i);
       for (const coord of coords) {
-        wallScore += this.symmSumTerrain(x, y, coord[0], coord[1])
+        wallScore += this.symmSumTerrain(x, y, coord[0], coord[1]);
       }
 
     }
@@ -106,30 +106,30 @@ export class RoomPlanner {
    * @private
    */
   private symmSumTerrain(x: number, y: number, dx: number, dy: number, terrainType: number = TERRAIN_MASK_WALL): number {
-    let sum = 0
-    const room = Game.rooms[this.roomID]
+    let sum = 0;
+    const room = Game.rooms[this.roomID];
 
     if (room === null) {
-      Logger.logError("symmSumTerrain received null room")
-      return 0
+      Logger.logError("symmSumTerrain received null room");
+      return 0;
     }
 
     // early stop if dx and dy are 0
     if (dx === 0 && dy === 0) {
       if (room) {
-        const terrain = room.getTerrain().get(x, y)
+        const terrain = room.getTerrain().get(x, y);
         if (terrain === terrainType) {
           sum++;
         }
       }
-      return sum
+      return sum;
     }
 
     for (let i = 0; i < 4; i++) {
       const candidateX = x + dx;
       const candidateY = y + dy;
       if (room) {
-        const terrain = room.getTerrain().get(candidateX, candidateY)
+        const terrain = room.getTerrain().get(candidateX, candidateY);
         if (terrain === terrainType) {
           sum++;
         }
@@ -150,17 +150,17 @@ export class RoomPlanner {
    * @private
    */
   private genSymmSumCoords(distance: number): number[][] {
-    const pairs: number[][] = []
+    const pairs: number[][] = [];
     // first go across
-    for(let x = 0; x < distance+1; x++) {
-      pairs.push([x, distance])
+    for (let x = 0; x < distance + 1; x++) {
+      pairs.push([x, distance]);
     }
     // then down, leaving off the last element
-    for(let y = distance-1; y > 1; y--) {
-      pairs.push([distance, y])
+    for (let y = distance - 1; y > 1; y--) {
+      pairs.push([distance, y]);
     }
 
-    return pairs
+    return pairs;
   }
 
   /**
@@ -171,26 +171,26 @@ export class RoomPlanner {
    * @private
    */
   private genPOICoords(x: number, y: number, windowSize: number): number[][] {
-    const pairs: number[][] = []
+    const pairs: number[][] = [];
 
     // first navigate to the top right candidate so we can simplify our loops (this is a little scrappy)
-    let newX: number = x
-    let newY: number = y
+    let newX: number = x;
+    let newY: number = y;
     while (this.inBounds(newX - windowSize, y)) {
-      newX -= windowSize
+      newX -= windowSize;
     }
     while (this.inBounds(x, newY - windowSize)) {
-      newY -= windowSize
+      newY -= windowSize;
     }
 
     // Now we can iterate through two, cleaner loops
     for (let i = newX; i < 45; i += windowSize) {
       for (let j = newY; j < 45; j += windowSize) {
-        pairs.push([i,j])
+        pairs.push([i, j]);
       }
     }
 
-    return pairs
+    return pairs;
   }
 
   /**
@@ -200,7 +200,7 @@ export class RoomPlanner {
    * @private
    */
   private inBounds(x: number, y: number) {
-    return (x >= 14 && x <= 35 && y >= 14 && y <= 35)
+    return (x >= 14 && x <= 35 && y >= 14 && y <= 35);
   }
 
 }
