@@ -11,13 +11,7 @@ export class RoomPlanner {
 
   public planRoom(): void {
     //
-    console.log(" ");
-    console.log(" ");
-    const POI: number[] = this.findPOI(25, 25, 5);
-    console.log(" ");
-    console.log("POI is: ");
-    console.log(POI[0], POI[1]);
-    console.log(" ");
+
   }
 
   /**
@@ -36,16 +30,12 @@ export class RoomPlanner {
     }
 
     const coords = this.genPOICoords(x, y, windowSize);
-    
+
     for (const coord of coords) {
       // check the core of the base (no walls allowed in the core)
       const innerSum = this.sumWallTiles(coord[0], coord[1], 0, 2);
       if (innerSum === 0) {
         const outerSum = this.sumWallTiles(coord[0], coord[1], 2, 6);
-        console.log("=====");
-        console.log(coord);
-        console.log(outerSum);
-        console.log("=====");
         // early stop if we have a perfect POI
         if (outerSum === 0) {
           return [coord[0], coord[1], 0];
