@@ -28,7 +28,9 @@ interface RoomPlanMemory {
   towers: number[][]
   walls: number[][]
   ramparts: number[][]
-  storage: number[]
+  coreLinks: number[][]
+  storage: number[][]
+  buildQueue: [number, number, string][]
 }
 
 interface SourceMemory {

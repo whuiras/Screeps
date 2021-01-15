@@ -139,8 +139,8 @@ export const roadCoords: [number, number][] =
 /**
  * storageCoord contains the location of the room's storage (mostly for posterity)
  */
-export const storageCoords: [number, number] =
-  [0,0]
+export const storageCoords: [number, number][] =
+  [[0,0]]
 
 /**
  * linkCoords contains the location of the rooms two, core links
