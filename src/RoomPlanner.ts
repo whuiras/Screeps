@@ -1,4 +1,5 @@
 import { Logger } from "./Logger";
+import { MemoryHandler } from "./memory/MemoryHandler";
 
 
 export class RoomPlanner {
@@ -10,8 +11,8 @@ export class RoomPlanner {
   }
 
   public planRoom(): void {
-    //
-
+    const POI = this.findPOI()
+    MemoryHandler.setBuildPlanMem(this.roomID, POI)
   }
 
   /**
@@ -22,7 +23,7 @@ export class RoomPlanner {
    * @param windowSize The size of the area we are finding POI in
    * @private
    */
-  private findPOI(x: number, y: number, windowSize: number): number[] {
+  private findPOI(x = 25, y = 25, windowSize = 5): number[] {
     let scoredPairs: number[][] = [];
 
     if (windowSize < 1) {
