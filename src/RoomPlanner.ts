@@ -16,12 +16,7 @@ export class RoomPlanner {
     const POI: number[] = this.findPOI(25, 25, 5)
     console.log(" ")
     console.log("POI is: ")
-    // console.log(POI[0], POI[1])
-    console.log(" ")
-    console.log(" ")
-
-    //console.log("sumWallTiles test: ")
-    //console.log(this.sumWallTiles(18,31, 0, 3))
+    console.log(POI[0], POI[1])
     console.log(" ")
   }
 
@@ -37,16 +32,25 @@ export class RoomPlanner {
     let scoredPairs: number[][] = []
 
     if (windowSize < 1) {
-      return []
+      return [x, y, this.sumWallTiles(x, y, 0, 5)]
     }
 
     const coords = this.genPOICoords(x, y, windowSize)
-    if (windowSize === 5)
-      console.log(coords)
+    
     for (const coord of coords) {
       // check the core of the base (no walls allowed in the core)
-      if(this.sumWallTiles(coord[0], coord[1], 0, 2) === 0) {
-        scoredPairs.push([coord[0], coord[1], this.sumWallTiles(coord[0], coord[1], 2, 5)])
+      const innerSum = this.sumWallTiles(coord[0], coord[1], 0, 2)
+      if(innerSum === 0) {
+        const outerSum = this.sumWallTiles(coord[0], coord[1], 2, 6)
+        console.log("=====")
+        console.log(coord)
+        console.log(outerSum)
+        console.log("=====")
+        // early stop if we have a perfect POI
+        if(outerSum === 0) {
+          return [coord[0], coord[1], 0]
+        }
+        scoredPairs.push([coord[0], coord[1], outerSum])
       }
     }
 
@@ -54,11 +58,6 @@ export class RoomPlanner {
     scoredPairs = scoredPairs.sort(function(a, b) {
       return a[2] - b[2];
     });
-
-    if (windowSize === 5) {
-      console.log('scored pairs are: ')
-      console.log(scoredPairs)
-    }
 
     // grab top 3 candidates and recursively get better POI's
     let newPairs : number[][] = []
@@ -72,9 +71,7 @@ export class RoomPlanner {
 
     const bestCoord = newPairs[0]
 
-    if (windowSize === 5) {
-      console.log('best coord is: ' + bestCoord.toString())
-    }
+    // console.log('best coord is: ' + bestCoord.toString())
 
     return bestCoord;
   }
