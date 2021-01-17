@@ -4,6 +4,8 @@
  * Some of these functions could be moved to a utils dir and imported, see: isInBounds()
  */
 import { RoomPlanner } from "../RoomPlanner";
+import { Logger } from "../Logger";
+import * as RelBuildCoords from "../relBuildCoords";
 
 export class MemoryHandler {
 
@@ -15,6 +17,20 @@ export class MemoryHandler {
   }
 
   /**
+   * getter for room memory
+   * @param roomID The id of the room to get
+   */
+  public static getRoomMem(roomID: Id<Room>): RoomMemory | null {
+    for (const roomMem of Memory.rooms) {
+      if (roomMem.id === roomID) {
+        return roomMem
+      }
+    }
+    Logger.logError("room ID does not exist in memory")
+    return null
+  }
+
+  /**
    * Updates memory for all rooms
    * @private
    */
@@ -22,7 +38,6 @@ export class MemoryHandler {
 
     if (Memory.initRoom === undefined) {
       Memory.initRoom = {} as RoomMemory
-      // Memory.initRoom = Object.create({}) as RoomMemory
       this.initRoomMem(Memory.initRoom, Object.values(Game.rooms)[0])
       console.log(Memory.initRoom)
       console.log(typeof Memory.initRoom)
@@ -40,6 +55,43 @@ export class MemoryHandler {
       this.initRoomMem(Memory.rooms[i], Object.values(Game.rooms)[i])
     }
   }
+
+  /**
+   *
+   * @param roomID
+   * @param POI
+   */
+  public static setBuildPlanMem(roomID: Id<Room>, POI: number[]): void {
+    const roomMem = this.getRoomMem(roomID)
+    if (roomMem) {
+      roomMem.roomPlan = {
+        coreLinks: [],
+        buildQueue: [],
+        containers: [],
+        extensions: [],
+        ramparts: [],
+        roads: [],
+        storage: [],
+        towers: [],
+        walls: []
+      }
+      for (const relExCoord of RelBuildCoords.extensionCoords) {
+        const exCoord = [POI[0]+relExCoord[0], POI[1]+relExCoord[1]]
+        roomMem.roomPlan.extensions.push(exCoord)
+      }
+      for (const relRoadCoord of RelBuildCoords.roadCoords) {
+        const roadCoord = [POI[0]+relRoadCoord[0], POI[1]+relRoadCoord[1]]
+        roomMem.roomPlan.roads.push(roadCoord)
+      }
+      for (const relLinkCoord of RelBuildCoords.linkCoords) {
+        const linkCoord = [POI[0]+relLinkCoord[0], POI[1]+relLinkCoord[1]]
+        roomMem.roomPlan.coreLinks.push(linkCoord)
+      }
+      const storCoord = [POI[0]+RelBuildCoords.storageCoords[0][0], POI[1]+RelBuildCoords.storageCoords[0][1]]
+      roomMem.roomPlan.storage.push(storCoord)
+    }
+  }
+
 
   /**
    * Initializes memory for a specific room. Updates fields like 'id' that are only set once.
