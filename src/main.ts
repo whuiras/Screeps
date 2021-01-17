@@ -4,11 +4,12 @@ import { RunStrategy } from "./mainStrategy/RunStrategy";
 import { AbstractStrategy } from "./mainStrategy/AbstractStrategy";
 import { MemoryHandler } from "./memory/MemoryHandler";
 import { Logger } from "./Logger";
-import * as Profiler from "../libraries/Profiler";
 
 // global.profiler = Profiler.init();
 const memoryHandler: MemoryHandler = new MemoryHandler();
 const logger: Logger = new Logger(3);
+const bootstrapStrategy: BootstrapStrategy = new BootstrapStrategy();
+const runStrategy: RunStrategy = new RunStrategy();
 
 
 export const loop = ErrorMapper.wrapLoop(() => {
@@ -20,21 +21,21 @@ export const loop = ErrorMapper.wrapLoop(() => {
   memoryHandler.updateMemory();
 
   // Assign main algorithm
-  let mainStrategy: AbstractStrategy = new RunStrategy();
+  let strategy: AbstractStrategy = new RunStrategy();
   if (Object.keys(Game.rooms).length === 1) {
     const room = Object.values(Game.rooms).find((r) => r.controller && r.controller.my);
 
     if (room !== undefined && room.controller !== undefined && room.controller.level <= 9) {
       console.log("Bootstrapping");
-      mainStrategy = new BootstrapStrategy();
+      strategy = bootstrapStrategy;
     }
 
   } else {
-    mainStrategy = new RunStrategy();
+    strategy = runStrategy;
   }
 
-  if (mainStrategy) {
-    mainStrategy.execute();
+  if (strategy) {
+    strategy.execute();
   }
 
 
