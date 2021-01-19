@@ -12,6 +12,7 @@ interface Memory {
 
 interface RoomMemory {
   init: boolean
+  levelInit: boolean
   id: string
   lastUpdated: number
   sources: SourceMemory[]
