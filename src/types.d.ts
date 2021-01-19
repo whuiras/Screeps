@@ -1,6 +1,3 @@
-// example declaration file - remove these and add your own custom typings
-
-// memory extension samples
 interface CreepMemory {
   role: string;
   upgrading?: boolean
@@ -8,19 +5,33 @@ interface CreepMemory {
 
 interface Memory {
   uuid: number;
-  log: any;
+  initialized: boolean
   initRoom: RoomMemory
   rooms: RoomMemory[]
 }
 
 interface RoomMemory {
   init: boolean
+  levelInit: boolean
   id: string
   lastUpdated: number
   sources: SourceMemory[]
   spawn: string
   controller: string
   maxHarvesters: number
+  roomPlan: RoomPlanMemory
+}
+
+interface RoomPlanMemory {
+  containers: number[][]
+  extensions: number[][]
+  roads: number[][]
+  towers: number[][]
+  walls: number[][]
+  ramparts: number[][]
+  coreLinks: number[][]
+  storage: number[][]
+  buildQueue: [number, number, string][]
 }
 
 interface SourceMemory {
@@ -30,9 +41,3 @@ interface SourceMemory {
 }
 
 
-// `global` extension samples
-declare namespace NodeJS {
-  interface Global {
-    log: any;
-  }
-}

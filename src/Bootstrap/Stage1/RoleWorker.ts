@@ -3,12 +3,10 @@ export const RoleWorker =
 
   run(creep: Creep): void {
     if(creep.memory.upgrading && creep.store.energy === 0) {
-      console.log("test")
       creep.memory.upgrading = false;
       creep.say('🔄 harvest');
     }
     if(!creep.memory.upgrading && creep.store.getFreeCapacity(RESOURCE_ENERGY) === 0) {
-      console.log("test2")
       creep.memory.upgrading = true;
       creep.say('⚡ upgrade');
     }

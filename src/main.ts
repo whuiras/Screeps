@@ -1,35 +1,41 @@
 import { ErrorMapper } from "utils/ErrorMapper";
-import {BootstrapStrategy} from "./mainStrategy/BootstrapStrategy";
-import {RunStrategy} from "./mainStrategy/RunStrategy";
+import { BootstrapStrategy } from "./mainStrategy/BootstrapStrategy";
+import { RunStrategy } from "./mainStrategy/RunStrategy";
 import { AbstractStrategy } from "./mainStrategy/AbstractStrategy";
 import { MemoryHandler } from "./memory/MemoryHandler";
+import { Logger } from "./Logger";
 
-const memoryHandler : MemoryHandler = new MemoryHandler()
+// global.profiler = Profiler.init();
+const memoryHandler: MemoryHandler = new MemoryHandler();
+const logger: Logger = new Logger(3);
+const bootstrapStrategy: BootstrapStrategy = new BootstrapStrategy();
+const runStrategy: RunStrategy = new RunStrategy();
+
 
 export const loop = ErrorMapper.wrapLoop(() => {
 
   if (Game.time % 10 === 0) {
-    console.log(`Current game tick is ${Game.time}`)
+    console.log(`Current game tick is ${Game.time}`);
   }
 
-  memoryHandler.updateMemory()
+  memoryHandler.updateMemory();
 
   // Assign main algorithm
-  let mainStrategy:AbstractStrategy = new RunStrategy()
+  let strategy: AbstractStrategy = new RunStrategy();
   if (Object.keys(Game.rooms).length === 1) {
-    const room = Object.values(Game.rooms).find((r) => r.controller && r.controller.my)
+    const room = Object.values(Game.rooms).find((r) => r.controller && r.controller.my);
 
-    if (room !== undefined && room.controller !== undefined && room.controller.level <= 4) {
-      console.log("Bootstrapping")
-      mainStrategy = new BootstrapStrategy()
+    if (room !== undefined && room.controller !== undefined && room.controller.level <= 9) {
+      console.log("Bootstrapping");
+      strategy = bootstrapStrategy;
     }
 
   } else {
-    mainStrategy = new RunStrategy()
+    strategy = runStrategy;
   }
 
-  if (mainStrategy) {
-    mainStrategy.execute()
+  if (strategy) {
+    strategy.execute();
   }
 
 

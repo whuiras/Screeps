@@ -1,40 +1,70 @@
+import { Logger } from "./Logger";
+import { MemoryHandler } from "./memory/MemoryHandler";
+
+
 export class RoomPlanner {
 
-  private room: Room;
   private roomID: Id<Room>;
 
   public constructor(roomID: Id<Room>) {
-    this.room = Game.getObjectById(roomID) as Room;
     this.roomID = roomID;
   }
 
   public planRoom(): void {
-    //
-    const POI: number[] = this.findPOI(25, 25, 5)
+    const POI = this.findPOI()
+    MemoryHandler.setBuildPlanMem(this.roomID, POI)
   }
 
   /**
    * This function scans then entire room and returns the (x,y) coordinate of where a base should be located
+   * NOTE: This is incredibly expensive, though it only runs once per room
+   * @param x The x origin we are find POI around
+   * @param y The y origin we are find POI around
+   * @param windowSize The size of the area we are finding POI in
    * @private
    */
-  private findPOI(x: number, y: number, windowSize: number): number[] {
-    const pairs =[]
-    const scoredPairs = []
+  private findPOI(x = 25, y = 25, windowSize = 5): number[] {
+    let scoredPairs: number[][] = [];
 
     if (windowSize < 1) {
-      return []
+      return [x, y, this.sumWallTiles(x, y, 0, 5)];
     }
 
-    const coords = this.genPOICoords(x, y, windowSize)
+    const coords = this.genPOICoords(x, y, windowSize);
+
     for (const coord of coords) {
-      // check the core of the base (no walls allowed)
-      if(this.sumWallTiles(coord[0], coord[1], 0, 4) === 0) {
-        scoredPairs.push(coord[0], coord[1], this.sumWallTiles(coord[0], coord[1], 4, 14))
+      // check the core of the base (no walls allowed in the core)
+      const innerSum = this.sumWallTiles(coord[0], coord[1], 0, 2);
+      if (innerSum === 0) {
+        const outerSum = this.sumWallTiles(coord[0], coord[1], 2, 6);
+        // early stop if we have a perfect POI
+        if (outerSum === 0) {
+          return [coord[0], coord[1], 0];
+        }
+        scoredPairs.push([coord[0], coord[1], outerSum]);
       }
     }
 
 
-    return [0, 0];
+    scoredPairs = scoredPairs.sort(function(a, b) {
+      return a[2] - b[2];
+    });
+
+    // grab top 3 candidates and recursively get better POI's
+    let newPairs: number[][] = [];
+    newPairs.push(this.findPOI(scoredPairs[0][0], scoredPairs[0][1], windowSize - 2));
+    // newPairs.push(this.findPOI(scoredPairs[1][0], scoredPairs[1][1], windowSize-2))
+    // newPairs.push(this.findPOI(scoredPairs[2][0], scoredPairs[2][1], windowSize-2))
+
+    newPairs = newPairs.sort(function(a, b) {
+      return a[2] - b[2];
+    });
+
+    const bestCoord = newPairs[0];
+
+    // console.log('best coord is: ' + bestCoord.toString())
+
+    return bestCoord;
   }
 
   /**
@@ -47,11 +77,10 @@ export class RoomPlanner {
    */
   private sumWallTiles(x: number, y: number, start: number, end: number): number {
     let wallScore = 0;
-
-    for (let i = start; i === end; i++) {
-      const coords = this.genSymmSumCoords(i)
+    for (let i = start; i <= end; i++) {
+      const coords = this.genSymmSumCoords(i);
       for (const coord of coords) {
-        wallScore += this.symmSumTerrain(x, y, coord[0], coord[1])
+        wallScore += this.symmSumTerrain(x, y, coord[0], coord[1]);
       }
 
     }
@@ -69,13 +98,32 @@ export class RoomPlanner {
    */
   private symmSumTerrain(x: number, y: number, dx: number, dy: number, terrainType: number = TERRAIN_MASK_WALL): number {
     let sum = 0;
+    const room = Game.rooms[this.roomID];
+
+    if (room === null) {
+      Logger.logError("symmSumTerrain received null room");
+      return 0;
+    }
+
+    // early stop if dx and dy are 0
+    if (dx === 0 && dy === 0) {
+      if (room) {
+        const terrain = room.getTerrain().get(x, y);
+        if (terrain === terrainType) {
+          sum++;
+        }
+      }
+      return sum;
+    }
 
     for (let i = 0; i < 4; i++) {
       const candidateX = x + dx;
       const candidateY = y + dy;
-      const terrain = this.room.getTerrain().get(candidateX, candidateY)
-      if (terrain === terrainType) {
-        sum++;
+      if (room) {
+        const terrain = room.getTerrain().get(candidateX, candidateY);
+        if (terrain === terrainType) {
+          sum++;
+        }
       }
 
       const temp = dy;
@@ -83,6 +131,7 @@ export class RoomPlanner {
       dx = temp;
       dy = -dy;
     }
+
     return sum;
   }
 
@@ -92,17 +141,17 @@ export class RoomPlanner {
    * @private
    */
   private genSymmSumCoords(distance: number): number[][] {
-    const pairs: number[][] = []
+    const pairs: number[][] = [];
     // first go across
-    for(let x = 0; x < distance+1; x++) {
-      pairs.push([x, distance])
+    for (let x = 0; x < distance + 1; x++) {
+      pairs.push([x, distance]);
     }
     // then down, leaving off the last element
-    for(let y = distance-1; y > 1; y--) {
-      pairs.push([distance, y])
+    for (let y = distance - 1; y > 1; y--) {
+      pairs.push([distance, y]);
     }
 
-    return pairs
+    return pairs;
   }
 
   /**
@@ -113,28 +162,26 @@ export class RoomPlanner {
    * @private
    */
   private genPOICoords(x: number, y: number, windowSize: number): number[][] {
-    const pairs: number[][] = []
+    const pairs: number[][] = [];
 
     // first navigate to the top right candidate so we can simplify our loops (this is a little scrappy)
-    let newX: number = x
-    let newY: number = y
-
-    while (this.inBounds(newX, newY)) {
-      newX -= windowSize
+    let newX: number = x;
+    let newY: number = y;
+    while (this.inBounds(newX - windowSize, y)) {
+      newX -= windowSize;
     }
-    while (this.inBounds(newX, newY)) {
-      newY -= windowSize
+    while (this.inBounds(x, newY - windowSize)) {
+      newY -= windowSize;
     }
 
     // Now we can iterate through two, cleaner loops
-    pairs.push([newX, newY])
-    for (let i = newX; i < 44; i += windowSize) {
-      for (let j = newY; j < 44; j += windowSize) {
-        pairs.push([i,j])
+    for (let i = newX; i < 45; i += windowSize) {
+      for (let j = newY; j < 45; j += windowSize) {
+        pairs.push([i, j]);
       }
     }
 
-    return pairs
+    return pairs;
   }
 
   /**
@@ -144,7 +191,7 @@ export class RoomPlanner {
    * @private
    */
   private inBounds(x: number, y: number) {
-    return (x > 5 && x < 44 && y > 5 && y < 44)
+    return (x >= 14 && x <= 35 && y >= 14 && y <= 35);
   }
 
 }
