@@ -1,8 +1,6 @@
-import { Stage1Upkeep } from "./Stage1/Stage1Upkeep";
-import { Stage2Upkeep } from "./Stage2/Stage2Upkeep";
-import { Stage1Main } from "./Stage1/Stage1Main";
+import { AbstractPhase } from "./AbstractPhase";
 
-export abstract class AbstractBootUpkeep {
+export abstract class AbstractBootUpkeep extends AbstractPhase {
 
   public workers: Creep[];
   public minWorkers: number;
@@ -10,13 +8,11 @@ export abstract class AbstractBootUpkeep {
 
 
   public constructor() {
+    super();
     this.workers = [];
     this.harvesters = [];
     this.minWorkers = 4
   }
-
-
-  public abstract run(): void
 
   public updateCreeps(): void {
     this.workers = _.filter(Game.creeps, (creep) => creep.memory.role === "worker");

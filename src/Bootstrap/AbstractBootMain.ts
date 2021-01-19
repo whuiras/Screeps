@@ -1,6 +1,6 @@
-export abstract class AbstractBootMain {
+import { AbstractPhase } from "./AbstractPhase";
 
-  public abstract run(): void
+export abstract class AbstractBootMain extends AbstractPhase {
 
   public printStatus(): void {
     if(Game.spawns.Spawn1.spawning) {
