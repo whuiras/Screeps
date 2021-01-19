@@ -26,10 +26,6 @@ export class BootstrapStrategy extends AbstractStrategy {
   public stage2Main: Stage2Main;
   public stage2Init: Stage2Init;
 
-  // How often we check for an update to the
-  private checkRate: number;
-
-
   public constructor() {
     super();
     this.stage1Upkeep = new Stage1Upkeep();
@@ -41,11 +37,9 @@ export class BootstrapStrategy extends AbstractStrategy {
     this.upkeep = this.stage1Upkeep;
     this.main = this.stage1Main;
     this.init = this.stage1Init;
-    this.checkRate = 10
   }
 
   public execute(): void {
-    if (Game.time % this.checkRate) {
       const controller = Game.getObjectById(Memory.initRoom.controller as Id<StructureController>);
       if (controller) {
 
@@ -58,56 +52,48 @@ export class BootstrapStrategy extends AbstractStrategy {
           case 2:
             this.upkeep = this.stage1Upkeep;
             this.main = this.stage1Main;
-            this.checkRate = 50;
             break;
 
           case 3:
             this.upkeep = this.stage1Upkeep;
             this.main = this.stage1Main;
-            this.checkRate = 100;
             break;
 
           case 4:
             this.upkeep = this.stage1Upkeep;
             this.main = this.stage1Main;
-            this.checkRate = 200;
 
             break;
 
           case 5:
             this.upkeep = this.stage1Upkeep;
             this.main = this.stage1Main;
-            this.checkRate = 400;
 
             break;
 
           case 6:
             this.upkeep = this.stage1Upkeep;
             this.main = this.stage1Main;
-            this.checkRate = 500;
 
             break;
 
           case 7:
             this.upkeep = this.stage1Upkeep;
             this.main = this.stage1Main;
-            this.checkRate = 600;
             break;
 
           case 8:
             this.upkeep = this.stage1Upkeep;
             this.main = this.stage1Main;
-            this.checkRate = 700;
             break;
 
           default:
             this.upkeep = this.stage1Upkeep;
             this.main = this.stage1Main;
-            this.checkRate = 800;
             break;
         }
       }
-    }
+
     if (!Memory.initRoom.levelInit) {
       this.init.run();
     }
