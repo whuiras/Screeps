@@ -29,8 +29,14 @@ interface RoomPlanMemory {
   towers: number[][]
   walls: number[][]
   ramparts: number[][]
-  coreLinks: number[][]
+  links: number[][]
   storage: number[][]
+  spawns: number[][]
+  extractors: number[][]
+  labs: number[][]
+  terminal: number[][]
+  observer: number[][]
+  powerSpawn: number[][]
   buildQueue: [number, number, string][]
 }
 
