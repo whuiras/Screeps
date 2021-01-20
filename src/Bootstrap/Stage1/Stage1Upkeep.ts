@@ -17,9 +17,4 @@ export class Stage1Upkeep extends AbstractBootUpkeep{
 
   }
 
-  protected updateBuildQueue(): void {
-
-
-  }
-
 }
