@@ -2,5 +2,12 @@ import { AbstractPhase } from "./AbstractPhase";
 
 export abstract class AbstractLevelInit extends AbstractPhase {
 
-  protected abstract fillBuildQueue(): void
+  protected fillBuildQueue(): void {
+    this.fillRoads()
+    this.fillContainers()
+  }
+
+  protected abstract fillRoads(): void
+
+  protected abstract fillContainers(): void
 }

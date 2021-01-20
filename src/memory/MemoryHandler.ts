@@ -102,7 +102,7 @@ export class MemoryHandler {
   private initRoomMem(roomMem: RoomMemory, room: Room) {
     // There might be a better way of doing this than just a straight, 'has this been init' flag.
     if (roomMem.init) {
-      return
+      //return
     }
     roomMem.id = room.name
     const controller = room.controller
