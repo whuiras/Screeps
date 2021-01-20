@@ -8,6 +8,8 @@ import { AbstractStrategy } from "./AbstractStrategy";
 import { Stage1Init } from "../Bootstrap/Stage1/Stage1Init";
 import { AbstractLevelInit } from "../Bootstrap/AbstractLevelInit";
 import { Stage2Init } from "../Bootstrap/Stage2/Stage2Init";
+import { MemoryHandler } from "../memory/MemoryHandler";
+import { Logger } from "../Logger";
 
 
 /**
@@ -40,65 +42,81 @@ export class BootstrapStrategy extends AbstractStrategy {
   }
 
   public execute(): void {
-      const controller = Game.getObjectById(Memory.initRoom.controller as Id<StructureController>);
-      if (controller) {
+    for (const roomID of Object.keys(Game.rooms)) {
+      const roomMem = MemoryHandler.getRoomMem(roomID as Id<Room>);
+      if (roomMem) {
+        this.setPhaseRoomMemory(roomMem)
 
-        switch (controller.level) {
-          case 1:
-            this.upkeep = this.stage1Upkeep;
-            this.main = this.stage1Main;
-            break;
+        const controller = Game.getObjectById(roomMem.controller as Id<StructureController>);
+        if (controller) {
 
-          case 2:
-            this.upkeep = this.stage1Upkeep;
-            this.main = this.stage1Main;
-            break;
+          // assign correct stage for every phase
+          switch (controller.level) {
+            case 1:
+              this.upkeep = this.stage1Upkeep;
+              this.main = this.stage1Main;
+              break;
 
-          case 3:
-            this.upkeep = this.stage1Upkeep;
-            this.main = this.stage1Main;
-            break;
+            case 2:
+              this.upkeep = this.stage1Upkeep;
+              this.main = this.stage1Main;
+              break;
 
-          case 4:
-            this.upkeep = this.stage1Upkeep;
-            this.main = this.stage1Main;
+            case 3:
+              this.upkeep = this.stage1Upkeep;
+              this.main = this.stage1Main;
+              break;
 
-            break;
+            case 4:
+              this.upkeep = this.stage1Upkeep;
+              this.main = this.stage1Main;
 
-          case 5:
-            this.upkeep = this.stage1Upkeep;
-            this.main = this.stage1Main;
+              break;
 
-            break;
+            case 5:
+              this.upkeep = this.stage1Upkeep;
+              this.main = this.stage1Main;
 
-          case 6:
-            this.upkeep = this.stage1Upkeep;
-            this.main = this.stage1Main;
+              break;
 
-            break;
+            case 6:
+              this.upkeep = this.stage1Upkeep;
+              this.main = this.stage1Main;
 
-          case 7:
-            this.upkeep = this.stage1Upkeep;
-            this.main = this.stage1Main;
-            break;
+              break;
 
-          case 8:
-            this.upkeep = this.stage1Upkeep;
-            this.main = this.stage1Main;
-            break;
+            case 7:
+              this.upkeep = this.stage1Upkeep;
+              this.main = this.stage1Main;
+              break;
 
-          default:
-            this.upkeep = this.stage1Upkeep;
-            this.main = this.stage1Main;
-            break;
+            case 8:
+              this.upkeep = this.stage1Upkeep;
+              this.main = this.stage1Main;
+              break;
+
+            default:
+              this.upkeep = this.stage1Upkeep;
+              this.main = this.stage1Main;
+              break;
+          }
         }
-      }
 
-    if (!Memory.initRoom.levelInit) {
-      this.init.run();
+        if (!Memory.initRoom.levelInit) {
+          this.init.run();
+        }
+        this.upkeep.run();
+        this.main.run();
+      } else {
+        Logger.logError("Room memory not found (BootstrapStrategy.execute())")
+      }
     }
-    this.upkeep.run();
-    this.main.run();
+  }
+
+  private setPhaseRoomMemory(roomMem: RoomMemory) {
+    this.init.roomMem = roomMem
+    this.upkeep.roomMem = roomMem
+    this.main.roomMem = roomMem
   }
 }
 
