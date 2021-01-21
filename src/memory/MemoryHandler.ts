@@ -23,11 +23,11 @@ export class MemoryHandler {
   public static getRoomMem(roomID: Id<Room>): RoomMemory | null {
     for (const roomMem of Memory.rooms) {
       if (roomMem.id === roomID) {
-        return roomMem
+        return roomMem;
       }
     }
-    Logger.logError("room ID does not exist in memory")
-    return null
+    Logger.logError("room ID does not exist in memory");
+    return null;
   }
 
   /**
@@ -37,22 +37,22 @@ export class MemoryHandler {
   public updateRooms(): void {
 
     if (Memory.initRoom === undefined) {
-      Memory.initRoom = {} as RoomMemory
-      this.initRoomMem(Memory.initRoom, Object.values(Game.rooms)[0])
-      console.log(Memory.initRoom)
-      console.log(typeof Memory.initRoom)
+      Memory.initRoom = {} as RoomMemory;
+      this.initRoomMem(Memory.initRoom, Object.values(Game.rooms)[0]);
+      console.log(Memory.initRoom);
+      console.log(typeof Memory.initRoom);
     }
 
     if (Memory.rooms === undefined) {
-      Memory.rooms = []
+      Memory.rooms = [];
     }
 
-    const numRooms = Object.keys(Game.rooms).length
+    const numRooms = Object.keys(Game.rooms).length;
     for (let i = 0; i < numRooms; i++) {
       if (Memory.rooms[i] === undefined) {
-        Memory.rooms[i] = {} as RoomMemory
+        Memory.rooms[i] = {} as RoomMemory;
       }
-      this.initRoomMem(Memory.rooms[i], Object.values(Game.rooms)[i])
+      this.initRoomMem(Memory.rooms[i], Object.values(Game.rooms)[i]);
     }
   }
 
@@ -62,10 +62,16 @@ export class MemoryHandler {
    * @param POI
    */
   public static setBuildPlanMem(roomID: Id<Room>, POI: number[]): void {
-    const roomMem = this.getRoomMem(roomID)
+    const roomMem = this.getRoomMem(roomID);
     if (roomMem) {
       roomMem.roomPlan = {
-        coreLinks: [],
+        extractors: [],
+        labs: [],
+        observer: [],
+        powerSpawn: [],
+        spawns: [],
+        terminal: [],
+        links: [],
         buildQueue: [],
         containers: [],
         extensions: [],
@@ -74,21 +80,21 @@ export class MemoryHandler {
         storage: [],
         towers: [],
         walls: []
-      }
+      };
       for (const relExCoord of RelBuildCoords.extensionCoords) {
-        const exCoord = [POI[0]+relExCoord[0], POI[1]+relExCoord[1]]
-        roomMem.roomPlan.extensions.push(exCoord)
+        const exCoord = [POI[0] + relExCoord[0], POI[1] + relExCoord[1]];
+        roomMem.roomPlan.extensions.push(exCoord);
       }
       for (const relRoadCoord of RelBuildCoords.roadCoords) {
-        const roadCoord = [POI[0]+relRoadCoord[0], POI[1]+relRoadCoord[1]]
-        roomMem.roomPlan.roads.push(roadCoord)
+        const roadCoord = [POI[0] + relRoadCoord[0], POI[1] + relRoadCoord[1]];
+        roomMem.roomPlan.roads.push(roadCoord);
       }
       for (const relLinkCoord of RelBuildCoords.linkCoords) {
-        const linkCoord = [POI[0]+relLinkCoord[0], POI[1]+relLinkCoord[1]]
-        roomMem.roomPlan.coreLinks.push(linkCoord)
+        const linkCoord = [POI[0] + relLinkCoord[0], POI[1] + relLinkCoord[1]];
+        roomMem.roomPlan.links.push(linkCoord);
       }
-      const storCoord = [POI[0]+RelBuildCoords.storageCoords[0][0], POI[1]+RelBuildCoords.storageCoords[0][1]]
-      roomMem.roomPlan.storage.push(storCoord)
+      const storCoord = [POI[0] + RelBuildCoords.storageCoords[0][0], POI[1] + RelBuildCoords.storageCoords[0][1]];
+      roomMem.roomPlan.storage.push(storCoord);
     }
   }
 
@@ -102,18 +108,18 @@ export class MemoryHandler {
   private initRoomMem(roomMem: RoomMemory, room: Room) {
     // There might be a better way of doing this than just a straight, 'has this been init' flag.
     if (roomMem.init) {
-      //return
+      return;
     }
-    roomMem.id = room.name
-    const controller = room.controller
+    roomMem.id = room.name;
+    const controller = room.controller;
     if (controller !== undefined) {
-      roomMem.controller = controller.id
+      roomMem.controller = controller.id;
     }
-    roomMem.maxHarvesters = this.calcMaxRoomHarvesters(room)
+    roomMem.maxHarvesters = this.calcMaxRoomHarvesters(room);
 
-    const roomPlanner: RoomPlanner = new RoomPlanner(room.name as Id<Room>)
-    roomPlanner.planRoom()
-    roomMem.init = true
+    const roomPlanner: RoomPlanner = new RoomPlanner(room.name as Id<Room>);
+    roomPlanner.planRoom();
+    roomMem.init = true;
   }
 
   private deleteCreepMem(): void {
@@ -137,10 +143,10 @@ export class MemoryHandler {
 
   private calcMaxSourceHarvesters(room: Room, source: Source): number {
     const position = source.pos;
-    let sum = 0
-    sum += this.symmScan(room, position.x, position.y, 0, 1)
-    sum += this.symmScan(room, position.x, position.y, 1, 1)
-    return sum
+    let sum = 0;
+    sum += this.symmScan(room, position.x, position.y, 0, 1);
+    sum += this.symmScan(room, position.x, position.y, 1, 1);
+    return sum;
   }
 
   /**
@@ -154,21 +160,21 @@ export class MemoryHandler {
   }
 
   private symmScan(room: Room, x: number, y: number, dx: number, dy: number): number {
-    let sum = 0
+    let sum = 0;
     for (let i = 0; i < 4; i++) {
-      const candidateX = x + dx
-      const candidateY = y + dy
+      const candidateX = x + dx;
+      const candidateY = y + dy;
       if (this.isInBounds(candidateX, candidateY)) {
         if (room.getTerrain().get(candidateX, candidateY) !== TERRAIN_MASK_WALL) {
-          sum++
+          sum++;
         }
       }
-      const temp = dy
-      dy = dx
-      dx = temp
-      dy = -dy
+      const temp = dy;
+      dy = dx;
+      dx = temp;
+      dy = -dy;
     }
-    return sum
+    return sum;
   }
 
 
