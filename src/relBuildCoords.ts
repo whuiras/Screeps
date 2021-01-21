@@ -137,7 +137,7 @@ export const roadCoords: [number, number][] =
     [4, -4],
     [-4, -4],
     [-4, 4],
-    
+
     [5, 5],
     [5, -5],
     [-5, -5],
