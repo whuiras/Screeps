@@ -38,6 +38,7 @@ interface RoomPlanMemory {
   observer: number[][]
   powerSpawn: number[][]
   buildQueue: [number, number, string][]
+  levelBuilt: boolean[]
 }
 
 interface SourceMemory {
