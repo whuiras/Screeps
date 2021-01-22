@@ -102,7 +102,8 @@ export class BootstrapStrategy extends AbstractStrategy {
           }
         }
 
-        if (!Memory.initRoom.levelInit) {
+        // This might be changed to levelBuild[controller.level], not sure yet.
+        if (!roomMem.levelInit) {
           this.init.run();
         }
         this.upkeep.run();
