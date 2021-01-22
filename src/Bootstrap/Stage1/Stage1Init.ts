@@ -1,19 +1,18 @@
 import { AbstractLevelInit} from "../AbstractLevelInit";
-import * as RCLConstants from "RCLConstants"
 
 export class Stage1Init extends AbstractLevelInit {
 
-
-
-  protected run(): void {
+  protected runInit(): void {
+    this.checkPreviousBuilds()
     this.fillBuildQueue()
   }
 
   protected fillBuildQueue(): void {
-    for (let i = 0; i < 5; i++) {
-
-    }
+    this.fillStructurePlan(10, STRUCTURE_ROAD)
   }
 
+  protected checkPreviousBuilds(): void {
+    super.buildPreviousLevels(0)
+  }
 
 }

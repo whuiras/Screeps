@@ -1,6 +1,6 @@
 import { AbstractLevelInit} from "../AbstractLevelInit";
 
-export class Stage2Init extends AbstractLevelInit {
+export class Stage8Init extends AbstractLevelInit {
 
   protected runInit(): void {
     this.checkPreviousBuilds()
@@ -12,7 +12,7 @@ export class Stage2Init extends AbstractLevelInit {
   }
 
   protected checkPreviousBuilds(): void {
-    super.buildPreviousLevels(1)
+    super.buildPreviousLevels(7)
   }
 
 }
