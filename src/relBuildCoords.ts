@@ -89,7 +89,7 @@ export const roadCoords: [number, number][] =
     [1, 1],
     [1, -1],
     [-1, -1],
-    [-1, 1],
+    [-1, 1],// 10
 
     [0, 3],
     [3, 0],
@@ -103,7 +103,7 @@ export const roadCoords: [number, number][] =
     [2, 2],
     [2, -2],
     [-2, -2],
-    [-2, 2],
+    [-2, 2],// 12
 
     [0, 5],
     [5, 0],
@@ -117,7 +117,7 @@ export const roadCoords: [number, number][] =
     [4, 1],
     [4, -1],
     [-4, -1],
-    [-4, 1],
+    [-4, 1],// 12
 
     [3, 3],
     [3, -3],
@@ -131,7 +131,7 @@ export const roadCoords: [number, number][] =
     [5, 2],
     [5, -2],
     [-5, -2],
-    [-5, 2],
+    [-5, 2],// 12
 
     [4, 4],
     [4, -4],
@@ -141,7 +141,7 @@ export const roadCoords: [number, number][] =
     [5, 5],
     [5, -5],
     [-5, -5],
-    [-5, 5]
+    [-5, 5]// 8
   ];
 
 /**
