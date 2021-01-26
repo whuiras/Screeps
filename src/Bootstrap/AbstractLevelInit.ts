@@ -16,6 +16,7 @@ export abstract class AbstractLevelInit extends AbstractPhase {
     this.roomMem.levelInit = true
   }
 
+  /*
   protected buildPreviousLevels(upTo: number): void {
     for (let i = 0; i <= upTo; i++) {
       if (!this.roomMem.roomPlan.levelBuilt[i]) {
@@ -63,7 +64,10 @@ export abstract class AbstractLevelInit extends AbstractPhase {
    * Calls buildPreviousLevels from the subclass, passing on upTo parameter
    * @protected
    */
+
+  /*
   protected abstract checkPreviousBuilds(): void
+*/
 
   protected abstract runInit(): void
 
