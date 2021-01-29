@@ -4,7 +4,6 @@ import { RCL3Structures } from "../../RCLConstants";
 export class Stage3Init extends AbstractLevelInit {
 
   protected runInit(): void {
-    this.checkPreviousBuilds()
     this.fillBuildQueue()
   }
 
@@ -14,8 +13,5 @@ export class Stage3Init extends AbstractLevelInit {
     this.fillStructurePlan(12, STRUCTURE_ROAD)
   }
 
-  protected checkPreviousBuilds(): void {
-    super.buildPreviousLevels(2)
-  }
 
 }

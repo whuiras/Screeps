@@ -20,6 +20,8 @@ interface RoomMemory {
   controller: string
   maxHarvesters: number
   roomPlan: RoomPlanMemory
+  structures: RoomPlanMemory
+  buildQueue: [number, number, string][]
 }
 
 interface RoomPlanMemory {
@@ -37,8 +39,6 @@ interface RoomPlanMemory {
   terminal: number[][]
   observer: number[][]
   powerSpawn: number[][]
-  buildQueue: [number, number, string][]
-  levelBuilt: boolean[]
 }
 
 interface SourceMemory {
