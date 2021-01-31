@@ -15,7 +15,7 @@ interface RoomMemory {
   levelInit: boolean
   id: string
   lastUpdated: number
-  sources: SourceMemory[]
+  sources: Id<Source>[]
   spawn: string
   controller: string
   maxHarvesters: number
@@ -41,10 +41,5 @@ interface RoomPlanMemory {
   powerSpawn: number[][]
 }
 
-interface SourceMemory {
-  id: string
-  availableWorkers: number
-  currentWorkers: number
-}
 
 

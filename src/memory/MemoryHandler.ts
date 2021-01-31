@@ -112,6 +112,11 @@ export class MemoryHandler {
     if (controller !== undefined) {
       roomMem.controller = controller.id;
     }
+    const sources = room.find(FIND_SOURCES)
+    for (const source of sources) {
+      roomMem.sources.push(source.id)
+    }
+
     roomMem.maxHarvesters = this.calcMaxRoomHarvesters(room);
 
     const roomPlanner: RoomPlanner = new RoomPlanner(room.name as Id<Room>);
