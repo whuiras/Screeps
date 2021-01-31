@@ -3,7 +3,6 @@ import { AbstractLevelInit} from "../AbstractLevelInit";
 export class Stage6Init extends AbstractLevelInit {
 
   protected runInit(): void {
-    this.checkPreviousBuilds()
     this.fillBuildQueue()
   }
 
@@ -11,8 +10,5 @@ export class Stage6Init extends AbstractLevelInit {
     this.fillStructurePlan(10, STRUCTURE_ROAD)
   }
 
-  protected checkPreviousBuilds(): void {
-    super.buildPreviousLevels(5)
-  }
 
 }

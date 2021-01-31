@@ -72,7 +72,6 @@ export class MemoryHandler {
         spawns: [],
         terminal: [],
         links: [],
-        buildQueue: [],
         containers: [],
         extensions: [],
         ramparts: [],
