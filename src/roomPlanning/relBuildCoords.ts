@@ -145,6 +145,22 @@ export const roadCoords: [number, number][] =
   ];
 
 /**
+ * edgeCoords contains the edges of the core base, where connecting roads will be attached
+ * This could be expanded to include intermediate points, we will see.
+ */
+export const edgeCoords: [number, number][] =
+  [
+    [0,5],
+    [0,-5],
+    [5,0],
+    [-5,0],
+    [5,5],
+    [5,-5],
+    [-5,-5],
+    [-5,5]
+  ];
+
+/**
  * storageCoord contains the location of the room's storage (mostly for posterity)
  */
 export const storageCoords: [number, number][] =
