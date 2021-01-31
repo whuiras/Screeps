@@ -1,5 +1,6 @@
 import { Logger } from "./Logger";
 import { MemoryHandler } from "./memory/MemoryHandler";
+import { RoomPlan } from "./RoomPlan";
 
 
 export class RoomPlanner {
@@ -10,7 +11,7 @@ export class RoomPlanner {
     this.roomID = roomID;
   }
 
-  public planRoom(): void {
+  public planRoom(): RoomPlan {
     const POI = this.findPOI()
     MemoryHandler.setBuildPlanMem(this.roomID, POI)
   }
