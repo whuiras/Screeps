@@ -3,9 +3,10 @@
  *
  * Some of these functions could be moved to a utils dir and imported, see: isInBounds()
  */
-import { RoomPlanner } from "../RoomPlanner";
+import { RoomPlanner } from "../roomPlanning/RoomPlanner";
 import { Logger } from "../Logger";
-import * as RelBuildCoords from "../relBuildCoords";
+import * as RelBuildCoords from "../roomPlanning/relBuildCoords";
+import { RoomPlan } from "../roomPlanning/RoomPlan";
 
 export class MemoryHandler {
 
@@ -58,11 +59,10 @@ export class MemoryHandler {
 
   /**
    *
-   * @param roomID
-   * @param POI
+   * @param roomMem
+   * @param roomPlan
    */
-  public static setBuildPlanMem(roomID: Id<Room>, POI: number[]): void {
-    const roomMem = this.getRoomMem(roomID);
+  public static setBuildPlanMem(roomMem: RoomMemory, roomPlan: RoomPlan): void {
     if (roomMem) {
       roomMem.roomPlan = {
         extractors: [],
@@ -80,20 +80,18 @@ export class MemoryHandler {
         towers: [],
         walls: []
       };
-      for (const relExCoord of RelBuildCoords.extensionCoords) {
-        const exCoord = [POI[0] + relExCoord[0], POI[1] + relExCoord[1]];
-        roomMem.roomPlan.extensions.push(exCoord);
+      for (const coord of roomPlan.extensions) {
+        roomMem.roomPlan.extensions.push(coord);
       }
-      for (const relRoadCoord of RelBuildCoords.roadCoords) {
-        const roadCoord = [POI[0] + relRoadCoord[0], POI[1] + relRoadCoord[1]];
-        roomMem.roomPlan.roads.push(roadCoord);
+      for (const coord of roomPlan.roads) {
+        roomMem.roomPlan.roads.push(coord);
       }
-      for (const relLinkCoord of RelBuildCoords.linkCoords) {
-        const linkCoord = [POI[0] + relLinkCoord[0], POI[1] + relLinkCoord[1]];
-        roomMem.roomPlan.links.push(linkCoord);
+      for (const coord of roomPlan.links) {
+        roomMem.roomPlan.links.push(coord);
       }
-      const storCoord = [POI[0] + RelBuildCoords.storageCoords[0][0], POI[1] + RelBuildCoords.storageCoords[0][1]];
-      roomMem.roomPlan.storage.push(storCoord);
+      for (const coord of roomPlan.storage) {
+        roomMem.roomPlan.storage.push(coord);
+      }
     }
   }
 
@@ -117,7 +115,8 @@ export class MemoryHandler {
     roomMem.maxHarvesters = this.calcMaxRoomHarvesters(room);
 
     const roomPlanner: RoomPlanner = new RoomPlanner(room.name as Id<Room>);
-    roomPlanner.planRoom();
+    const roomPlan: RoomPlan = roomPlanner.planRoom();
+    MemoryHandler.setBuildPlanMem(roomMem, roomPlan)
     roomMem.init = true;
   }
 
