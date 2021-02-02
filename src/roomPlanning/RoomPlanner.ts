@@ -1,198 +1,100 @@
-import { Logger } from "./Logger";
-import { MemoryHandler } from "./memory/MemoryHandler";
+import { Logger } from "../Logger";
+import { MemoryHandler } from "../memory/MemoryHandler";
 import { RoomPlan } from "./RoomPlan";
+import * as RelBuildCoords from "./relBuildCoords";
+import { POIFinder } from "./POIFinder";
+import { edgeCoords } from "./relBuildCoords";
 
 
 export class RoomPlanner {
 
   private roomID: Id<Room>;
+  private roomPlan: RoomPlan
+  private poiFinder: POIFinder
+  private POI: number[]
+  private terrain: RoomTerrain
 
   public constructor(roomID: Id<Room>) {
     this.roomID = roomID;
+    this.roomPlan  = new RoomPlan();
+    this.poiFinder = new POIFinder(this.roomID);
+    this.POI = this.poiFinder.findPOI();
+    this.terrain = Game.rooms[this.roomID].getTerrain();
   }
 
   public planRoom(): RoomPlan {
-    const POI = this.findPOI()
-    MemoryHandler.setBuildPlanMem(this.roomID, POI)
-  }
 
-  /**
-   * This function scans then entire room and returns the (x,y) coordinate of where a base should be located
-   * NOTE: This is incredibly expensive, though it only runs once per room
-   * @param x The x origin we are find POI around
-   * @param y The y origin we are find POI around
-   * @param windowSize The size of the area we are finding POI in
-   * @private
-   */
-  private findPOI(x = 25, y = 25, windowSize = 5): number[] {
-    let scoredPairs: number[][] = [];
+    // mark the core base
+    this.addCoreBuildingType(this.roomPlan.coreEdges, RelBuildCoords.edgeCoords)
+    this.addCoreBuildingType(this.roomPlan.coreLinks, RelBuildCoords.linkCoords)
+    this.addCoreBuildingType(this.roomPlan.storage, RelBuildCoords.storageCoords)
+    this.addCoreBuildingType(this.roomPlan.extensions, RelBuildCoords.extensionCoords)
+    this.addCoreBuildingType(this.roomPlan.coreRoads, RelBuildCoords.roadCoords)
 
-    if (windowSize < 1) {
-      return [x, y, this.sumWallTiles(x, y, 0, 5)];
+
+    // convert edge coordinates to room positions
+    const edgePositions = [];
+    for (const coreEdge of this.roomPlan.coreEdges) {
+      edgePositions.push(new RoomPosition(coreEdge[0], coreEdge[1], this.roomID))
     }
 
-    const coords = this.genPOICoords(x, y, windowSize);
+    // add roads to controller and a controller link
+    const controller = Game.rooms[this.roomID].controller;
+    if (controller !== undefined) {
+      this.addCapRoadsAndLink(this.roomPlan.controllerLinks, controller.pos, edgePositions)
+    }
 
-    for (const coord of coords) {
-      // check the core of the base (no walls allowed in the core)
-      const innerSum = this.sumWallTiles(coord[0], coord[1], 0, 2);
-      if (innerSum === 0) {
-        const outerSum = this.sumWallTiles(coord[0], coord[1], 2, 6);
-        // early stop if we have a perfect POI
-        if (outerSum === 0) {
-          return [coord[0], coord[1], 0];
-        }
-        scoredPairs.push([coord[0], coord[1], outerSum]);
+    // add roads to sources and source links
+    for (const source of Game.rooms[this.roomID].find(FIND_SOURCES)) {
+      this.addCapRoadsAndLink(this.roomPlan.sourceLinks, source.pos, edgePositions)
+    }
+
+    return this.roomPlan;
+  }
+
+  private addCapRoadsAndLink(linkPlanCoords: number[][], origin: RoomPosition, edgePositions: RoomPosition[]): void {
+    const pathObject = PathFinder.search(origin, edgePositions)
+    if (!pathObject.incomplete) {
+      for (const point of pathObject.path) {
+        this.roomPlan.capRoads.push([point.x, point.y]);
+      }
+
+      // add link location, we want to avoid the controller itself, and the penultimate road.
+      const avoid = [[origin.x, origin.y], [pathObject.path[1].x, pathObject.path[1].y]]
+      const linkSite = this.findLinkSite([pathObject.path[0].x, pathObject.path[0].y], avoid)
+      linkPlanCoords.push(linkSite)
+
+    } else {
+      Logger.logError("No path to base from controller")
+    }
+  }
+
+  private addCoreBuildingType(planCoords: number[][], relCoords: number[][]) {
+    for (const relCoord of relCoords) {
+      const storCoord = [this.POI[0] + relCoord[0], this.POI[1] + relCoord[1]];
+      if (this.terrain.get(storCoord[0], storCoord[1]) !== TERRAIN_MASK_WALL) {
+        planCoords.push(storCoord);
+      }
+    }
+  }
+
+  private findLinkSite(origin: number[], avoid: number[][]): number[] {
+    const relCoords = [[0,1], [1,1], [1,0], [1,-1], [0,-1], [-1,-1], [-1,0], [-1,1]]
+    for (const relCoord of relCoords) {
+      const candidateX = relCoord[0] + origin[0]
+      const candidateY = relCoord[1] + origin[1]
+      if (this.terrain.get(candidateX, candidateY) !== TERRAIN_MASK_WALL
+        && !avoid.includes([candidateX, candidateY])) {
+        return [candidateX, candidateY]
       }
     }
 
+    Logger.logError("No suitable site for link found");
+    return [0,0];
 
-    scoredPairs = scoredPairs.sort(function(a, b) {
-      return a[2] - b[2];
-    });
-
-    // grab top 3 candidates and recursively get better POI's
-    let newPairs: number[][] = [];
-    newPairs.push(this.findPOI(scoredPairs[0][0], scoredPairs[0][1], windowSize - 2));
-    // newPairs.push(this.findPOI(scoredPairs[1][0], scoredPairs[1][1], windowSize-2))
-    // newPairs.push(this.findPOI(scoredPairs[2][0], scoredPairs[2][1], windowSize-2))
-
-    newPairs = newPairs.sort(function(a, b) {
-      return a[2] - b[2];
-    });
-
-    const bestCoord = newPairs[0];
-
-    // console.log('best coord is: ' + bestCoord.toString())
-
-    return bestCoord;
   }
 
-  /**
-   * Calculates how many walls are within the core (d < 4) distance from a POI.
-   * @param x x coord of the room
-   * @param y y coord of the room
-   * @param start starting distance from the origin
-   * @param end ending distance from the origin
-   * @private
-   */
-  private sumWallTiles(x: number, y: number, start: number, end: number): number {
-    let wallScore = 0;
-    for (let i = start; i <= end; i++) {
-      const coords = this.genSymmSumCoords(i);
-      for (const coord of coords) {
-        wallScore += this.symmSumTerrain(x, y, coord[0], coord[1]);
-      }
 
-    }
-    return wallScore;
-  }
 
-  /**
-   * This scans in a rotation for a specific terrain type, and returns the sum.
-   * @param x x coord of the room
-   * @param y y coord of the room
-   * @param dx x distance from the origin
-   * @param dy y distance from the origin
-   * @param terrainType The terrain type we are counting. Defaults to TERRAIN_MASK_WALL
-   * @private
-   */
-  private symmSumTerrain(x: number, y: number, dx: number, dy: number, terrainType: number = TERRAIN_MASK_WALL): number {
-    let sum = 0;
-    const room = Game.rooms[this.roomID];
-
-    if (room === null) {
-      Logger.logError("symmSumTerrain received null room");
-      return 0;
-    }
-
-    // early stop if dx and dy are 0
-    if (dx === 0 && dy === 0) {
-      if (room) {
-        const terrain = room.getTerrain().get(x, y);
-        if (terrain === terrainType) {
-          sum++;
-        }
-      }
-      return sum;
-    }
-
-    for (let i = 0; i < 4; i++) {
-      const candidateX = x + dx;
-      const candidateY = y + dy;
-      if (room) {
-        const terrain = room.getTerrain().get(candidateX, candidateY);
-        if (terrain === terrainType) {
-          sum++;
-        }
-      }
-
-      const temp = dy;
-      dy = dx;
-      dx = temp;
-      dy = -dy;
-    }
-
-    return sum;
-  }
-
-  /**
-   * Returns a quadrant of pairs x distance from an origin
-   * @param distance The distance we are from the origin
-   * @private
-   */
-  private genSymmSumCoords(distance: number): number[][] {
-    const pairs: number[][] = [];
-    // first go across
-    for (let x = 0; x < distance + 1; x++) {
-      pairs.push([x, distance]);
-    }
-    // then down, leaving off the last element
-    for (let y = distance - 1; y > 1; y--) {
-      pairs.push([distance, y]);
-    }
-
-    return pairs;
-  }
-
-  /**
-   * Generates an array of candidate POI's from around an origin point, a specified distance apart
-   * @param x The x coord
-   * @param y The y coord
-   * @param windowSize The distance between points
-   * @private
-   */
-  private genPOICoords(x: number, y: number, windowSize: number): number[][] {
-    const pairs: number[][] = [];
-
-    // first navigate to the top right candidate so we can simplify our loops (this is a little scrappy)
-    let newX: number = x;
-    let newY: number = y;
-    while (this.inBounds(newX - windowSize, y)) {
-      newX -= windowSize;
-    }
-    while (this.inBounds(x, newY - windowSize)) {
-      newY -= windowSize;
-    }
-
-    // Now we can iterate through two, cleaner loops
-    for (let i = newX; i < 45; i += windowSize) {
-      for (let j = newY; j < 45; j += windowSize) {
-        pairs.push([i, j]);
-      }
-    }
-
-    return pairs;
-  }
-
-  /**
-   * Returns true if a coordinate is in bounds per POI purposes
-   * @param x The x coord
-   * @param y The y coord
-   * @private
-   */
-  private inBounds(x: number, y: number) {
-    return (x >= 14 && x <= 35 && y >= 14 && y <= 35);
-  }
 
 }
