@@ -19,12 +19,12 @@ interface RoomMemory {
   spawn: string
   controller: string
   maxHarvesters: number
-  roomPlan: RoomPlanMemory
-  structures: RoomPlanMemory
+  roomPlan: structMemory
+  structures: structMemory
   buildQueue: [number, number, string][]
 }
 
-interface RoomPlanMemory {
+interface structMemory {
   containers: number[][]
   extensions: number[][]
   roads: number[][]
@@ -32,6 +32,9 @@ interface RoomPlanMemory {
   walls: number[][]
   ramparts: number[][]
   links: number[][]
+  coreLinks: number[][]
+  controllerLinks: number[][]
+  sourceLinks: number[][]
   storage: number[][]
   spawns: number[][]
   extractors: number[][]
