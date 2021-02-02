@@ -28,6 +28,8 @@ interface structMemory {
   containers: number[][]
   extensions: number[][]
   roads: number[][]
+  coreRoads: number[][]
+  capRoads: number[][]
   towers: number[][]
   walls: number[][]
   ramparts: number[][]
