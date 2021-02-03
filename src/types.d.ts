@@ -25,6 +25,7 @@ interface RoomMemory {
 }
 
 interface structMemory {
+  coreEdges: number[][]
   containers: number[][]
   extensions: number[][]
   roads: number[][]

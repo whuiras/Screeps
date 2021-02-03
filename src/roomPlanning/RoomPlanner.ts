@@ -1,28 +1,33 @@
 import { Logger } from "../Logger";
-import { MemoryHandler } from "../memory/MemoryHandler";
-import { RoomPlan } from "./RoomPlan";
 import * as RelBuildCoords from "./relBuildCoords";
 import { POIFinder } from "./POIFinder";
-import { edgeCoords } from "./relBuildCoords";
-
+import { MemoryHandler } from "../memory/MemoryHandler";
 
 export class RoomPlanner {
 
   private roomID: Id<Room>;
-  private roomPlan: RoomPlan
+  private roomPlan: structMemory
   private poiFinder: POIFinder
   private POI: number[]
   private terrain: RoomTerrain
 
   public constructor(roomID: Id<Room>) {
     this.roomID = roomID;
-    this.roomPlan  = new RoomPlan();
+
+    const roomMem = MemoryHandler.getRoomMem(roomID)
+    if (roomMem) {
+      this.roomPlan = roomMem.roomPlan
+    } else {
+      Logger.logFatal("Could not get roomMem to plan room")
+      this.roomPlan = {} as structMemory
+    }
+
     this.poiFinder = new POIFinder(this.roomID);
     this.POI = this.poiFinder.findPOI();
     this.terrain = Game.rooms[this.roomID].getTerrain();
   }
 
-  public planRoom(): RoomPlan {
+  public planRoom(): void {
 
     // mark the core base
     this.addCoreBuildingType(this.roomPlan.coreEdges, RelBuildCoords.edgeCoords)
@@ -48,8 +53,6 @@ export class RoomPlanner {
     for (const source of Game.rooms[this.roomID].find(FIND_SOURCES)) {
       this.addCapRoadsAndLink(this.roomPlan.sourceLinks, source.pos, edgePositions)
     }
-
-    return this.roomPlan;
   }
 
   private addCapRoadsAndLink(linkPlanCoords: number[][], origin: RoomPosition, edgePositions: RoomPosition[]): void {

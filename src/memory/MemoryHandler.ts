@@ -5,8 +5,6 @@
  */
 import { RoomPlanner } from "../roomPlanning/RoomPlanner";
 import { Logger } from "../Logger";
-import * as RelBuildCoords from "../roomPlanning/relBuildCoords";
-import { RoomPlan } from "../roomPlanning/RoomPlan";
 
 export class MemoryHandler {
 
@@ -14,7 +12,6 @@ export class MemoryHandler {
   public updateMemory(): void {
     this.deleteCreepMem();
     this.updateRooms();
-
   }
 
   /**
@@ -68,89 +65,6 @@ export class MemoryHandler {
   }
 
   /**
-   * These need to be pushed in order of build order
-   * @param roomMem
-   * @param roomPlan
-   */
-  public static setBuildPlanMem(roomMem: RoomMemory, roomPlan: RoomPlan): void {
-    if (roomMem) {
-      roomMem.roomPlan = {
-        extractors: [],
-        labs: [],
-        observer: [],
-        powerSpawn: [],
-        spawns: [],
-        terminal: [],
-        links: [],
-        controllerLinks: [],
-        coreLinks: [],
-        sourceLinks: [],
-        containers: [],
-        extensions: [],
-        ramparts: [],
-        roads: [],
-        coreRoads: [],
-        capRoads: [],
-        storage: [],
-        towers: [],
-        walls: []
-      };
-      for (const coord of roomPlan.coreRoads) {
-        roomMem.roomPlan.coreRoads.push(coord);
-      }
-      for (const coord of roomPlan.capRoads) {
-        roomMem.roomPlan.capRoads.push(coord);
-      }
-      for (const coord of roomPlan.containers) {
-        roomMem.roomPlan.containers.push(coord);
-      }
-      for (const coord of roomPlan.spawns) {
-        roomMem.roomPlan.spawns.push(coord);
-      }
-      for (const coord of roomPlan.extensions) {
-        roomMem.roomPlan.extensions.push(coord);
-      }
-      for (const coord of roomPlan.ramparts) {
-        roomMem.roomPlan.ramparts.push(coord);
-      }
-      for (const coord of roomPlan.walls) {
-        roomMem.roomPlan.walls.push(coord);
-      }
-      for (const coord of roomPlan.towers) {
-        roomMem.roomPlan.towers.push(coord);
-      }
-      for (const coord of roomPlan.storage) {
-        roomMem.roomPlan.storage.push(coord);
-      }
-      for (const coord of roomPlan.coreLinks) {
-        roomMem.roomPlan.coreLinks.push(coord);
-      }
-      for (const coord of roomPlan.sourceLinks) {
-        roomMem.roomPlan.sourceLinks.push(coord);
-      }
-      for (const coord of roomPlan.controllerLinks) {
-        roomMem.roomPlan.controllerLinks.push(coord);
-      }
-      for (const coord of roomPlan.extractors) {
-        roomMem.roomPlan.extractors.push(coord);
-      }
-      for (const coord of roomPlan.labs) {
-        roomMem.roomPlan.labs.push(coord);
-      }
-      for (const coord of roomPlan.terminals) {
-        roomMem.roomPlan.terminal.push(coord);
-      }
-      for (const coord of roomPlan.observers) {
-        roomMem.roomPlan.observer.push(coord);
-      }
-      for (const coord of roomPlan.powerSpawns) {
-        roomMem.roomPlan.powerSpawn.push(coord);
-      }
-    }
-  }
-
-
-  /**
    * Initializes memory for a specific room. Updates fields like 'id' that are only set once.
    * @param roomMem
    * @param room Room game object we are going to init
@@ -174,8 +88,7 @@ export class MemoryHandler {
     roomMem.maxHarvesters = this.calcMaxRoomHarvesters(room);
 
     const roomPlanner: RoomPlanner = new RoomPlanner(room.name as Id<Room>);
-    const roomPlan: RoomPlan = roomPlanner.planRoom();
-    MemoryHandler.setBuildPlanMem(roomMem, roomPlan);
+    roomPlanner.planRoom();
     roomMem.init = true;
   }
 
