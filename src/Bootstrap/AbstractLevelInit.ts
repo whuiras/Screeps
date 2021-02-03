@@ -23,7 +23,7 @@ export abstract class AbstractLevelInit extends AbstractPhase {
    */
   protected fillStructurePlan(toFill: number, buildingPlanMem: keyof structMemory, type: BuildableStructureConstant):void {
     const structurePlanMem = this.roomMem.roomPlan[buildingPlanMem]
-    const structMem = [];
+    const structMem = this.roomMem.structures[buildingPlanMem];
 
     if (structurePlanMem !== undefined) {
 
@@ -44,7 +44,7 @@ export abstract class AbstractLevelInit extends AbstractPhase {
             continue;
           }
           this.roomMem.buildQueue.push([coord[0], coord[1], type])
-          structMem.push(coord[0], coord[1])
+          structMem.push([coord[0], coord[1]])
 
         } else {
           Logger.logError("Build plan coord is undefined")
