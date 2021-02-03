@@ -150,28 +150,28 @@ export const roadCoords: [number, number][] =
  */
 export const edgeCoords: [number, number][] =
   [
-    [0,5],
-    [0,-5],
-    [5,0],
-    [-5,0],
-    [5,5],
-    [5,-5],
-    [-5,-5],
-    [-5,5]
+    [0, 5],
+    [0, -5],
+    [5, 0],
+    [-5, 0],
+    [5, 5],
+    [5, -5],
+    [-5, -5],
+    [-5, 5]
   ];
 
 /**
  * storageCoord contains the location of the room's storage (mostly for posterity)
  */
 export const storageCoords: [number, number][] =
-  [[0,0]]
+  [[0, 0]];
 
 /**
  * linkCoords contains the location of the rooms two, core links
  */
 export const linkCoords: [number, number][] =
   [
-    [0,1],
-    [0,-1]
-  ]
+    [0, 1],
+    [0, -1]
+  ];
 

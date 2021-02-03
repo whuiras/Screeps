@@ -12,7 +12,7 @@ export const RCL0Structures = {
   terminal: 0,
   observer: 0,
   powerSpawn: 0
-}
+};
 
 export const RCL1Structures = {
   roads: 10,
@@ -28,7 +28,7 @@ export const RCL1Structures = {
   terminal: 0,
   observer: 0,
   powerSpawn: 0
-}
+};
 
 export const RCL2Structures = {
   roads: 22,
@@ -44,7 +44,7 @@ export const RCL2Structures = {
   terminal: 0,
   observer: 0,
   powerSpawn: 0
-}
+};
 
 export const RCL3Structures = {
   roads: 34,
@@ -60,7 +60,7 @@ export const RCL3Structures = {
   terminal: 0,
   observer: 0,
   powerSpawn: 0
-}
+};
 
 export const RCL4Structures = {
   roads: 46,
@@ -76,7 +76,7 @@ export const RCL4Structures = {
   terminal: 0,
   observer: 0,
   powerSpawn: 0
-}
+};
 
 export const RCL5Structures = {
   roads: 54,
@@ -92,7 +92,7 @@ export const RCL5Structures = {
   terminal: 0,
   observer: 0,
   powerSpawn: 0
-}
+};
 
 export const RCL6Structures = {
   roads: 54,
@@ -108,7 +108,7 @@ export const RCL6Structures = {
   terminal: 1,
   observer: 0,
   powerSpawn: 0
-}
+};
 
 export const RCL7Structures = {
   roads: 54,
@@ -124,7 +124,7 @@ export const RCL7Structures = {
   terminal: 1,
   observer: 0,
   powerSpawn: 0
-}
+};
 
 export const RCL8Structures = {
   roads: 54,
@@ -140,4 +140,4 @@ export const RCL8Structures = {
   terminal: 1,
   observer: 1,
   powerSpawn: 1
-}
+};

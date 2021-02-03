@@ -45,7 +45,7 @@ export class BootstrapStrategy extends AbstractStrategy {
     for (const roomID of Object.keys(Game.rooms)) {
       const roomMem = MemoryHandler.getRoomMem(roomID as Id<Room>);
       if (roomMem) {
-        this.setPhaseRoomMemory(roomMem)
+        this.setPhaseRoomMemory(roomMem);
 
         const controller = Game.getObjectById(roomMem.controller as Id<StructureController>);
         if (controller) {
@@ -109,15 +109,15 @@ export class BootstrapStrategy extends AbstractStrategy {
         this.upkeep.run();
         this.main.run();
       } else {
-        Logger.logError("Room memory not found (BootstrapStrategy.execute())")
+        Logger.logError("Room memory not found (BootstrapStrategy.execute())");
       }
     }
   }
 
   private setPhaseRoomMemory(roomMem: RoomMemory) {
-    this.init.roomMem = roomMem
-    this.upkeep.roomMem = roomMem
-    this.main.roomMem = roomMem
+    this.init.roomMem = roomMem;
+    this.upkeep.roomMem = roomMem;
+    this.main.roomMem = roomMem;
   }
 }
 

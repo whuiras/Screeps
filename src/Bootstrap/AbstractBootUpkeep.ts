@@ -11,7 +11,7 @@ export abstract class AbstractBootUpkeep extends AbstractPhase {
     super();
     this.workers = [];
     this.harvesters = [];
-    this.minWorkers = 4
+    this.minWorkers = 4;
   }
 
   public updateCreeps(): void {

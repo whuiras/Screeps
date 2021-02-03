@@ -2,10 +2,10 @@ import { Logger } from "../Logger";
 
 export class POIFinder {
 
-  private readonly roomID: string
+  private readonly roomID: string;
 
   public constructor(roomID: string) {
-    this.roomID = roomID
+    this.roomID = roomID;
   }
 
   /**
