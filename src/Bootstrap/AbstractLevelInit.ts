@@ -18,7 +18,8 @@ export abstract class AbstractLevelInit extends AbstractPhase {
    * Notes: getting references to room memory should be done in the memory handler, not here.
    *
    * @param toFill The number of building to add up to
-   * @param buildingPlanMem
+   * @param buildingPlanMem The type of structure in memory
+   * @param type The type of structure to build
    * @protected
    */
   protected fillStructurePlan(toFill: number, buildingPlanMem: keyof structMemory, type: BuildableStructureConstant):void {
