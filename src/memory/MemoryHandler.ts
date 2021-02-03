@@ -57,6 +57,16 @@ export class MemoryHandler {
     }
   }
 
+  public static getCapRoadLen(roomMem: RoomMemory): number {
+    if (roomMem) {
+      if (roomMem.roomPlan) {
+        return roomMem.roomPlan.capRoads.length
+      }
+    }
+    Logger.logError("Could not get length of capRoads")
+    return 0;
+  }
+
   /**
    * These need to be pushed in order of build order
    * @param roomMem
