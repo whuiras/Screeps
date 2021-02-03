@@ -15,29 +15,36 @@ interface RoomMemory {
   levelInit: boolean
   id: string
   lastUpdated: number
-  sources: SourceMemory[]
+  sources: Id<Source>[]
   spawn: string
   controller: string
   maxHarvesters: number
-  roomPlan: RoomPlanMemory
-}
-
-interface RoomPlanMemory {
-  containers: number[][]
-  extensions: number[][]
-  roads: number[][]
-  towers: number[][]
-  walls: number[][]
-  ramparts: number[][]
-  coreLinks: number[][]
-  storage: number[][]
+  roomPlan: structMemory
+  structures: structMemory
   buildQueue: [number, number, string][]
 }
 
-interface SourceMemory {
-  id: string
-  availableWorkers: number
-  currentWorkers: number
+interface structMemory {
+  containers: number[][]
+  extensions: number[][]
+  roads: number[][]
+  coreRoads: number[][]
+  capRoads: number[][]
+  towers: number[][]
+  walls: number[][]
+  ramparts: number[][]
+  links: number[][]
+  coreLinks: number[][]
+  controllerLinks: number[][]
+  sourceLinks: number[][]
+  storage: number[][]
+  spawns: number[][]
+  extractors: number[][]
+  labs: number[][]
+  terminal: number[][]
+  observer: number[][]
+  powerSpawn: number[][]
 }
+
 
 

@@ -1,18 +1,11 @@
-import { Logger } from "./Logger";
-import { MemoryHandler } from "./memory/MemoryHandler";
+import { Logger } from "../Logger";
 
+export class POIFinder {
 
-export class RoomPlanner {
+  private readonly roomID: string
 
-  private roomID: Id<Room>;
-
-  public constructor(roomID: Id<Room>) {
-    this.roomID = roomID;
-  }
-
-  public planRoom(): void {
-    const POI = this.findPOI()
-    MemoryHandler.setBuildPlanMem(this.roomID, POI)
+  public constructor(roomID: string) {
+    this.roomID = roomID
   }
 
   /**
@@ -23,7 +16,7 @@ export class RoomPlanner {
    * @param windowSize The size of the area we are finding POI in
    * @private
    */
-  private findPOI(x = 25, y = 25, windowSize = 5): number[] {
+  public findPOI(x = 25, y = 25, windowSize = 5): number[] {
     let scoredPairs: number[][] = [];
 
     if (windowSize < 1) {
@@ -193,5 +186,4 @@ export class RoomPlanner {
   private inBounds(x: number, y: number) {
     return (x >= 14 && x <= 35 && y >= 14 && y <= 35);
   }
-
 }
