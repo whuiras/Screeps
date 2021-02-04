@@ -1,5 +1,7 @@
 import { AbstractPhase } from "./AbstractPhase";
 import { Logger } from "../Logger";
+import { MemoryHandler } from "../memory/MemoryHandler";
+import { AbstractRCLConstants } from "../RCLConstants/AbstractRCLConstants";
 
 export abstract class AbstractLevelInit extends AbstractPhase {
 
@@ -10,7 +12,24 @@ export abstract class AbstractLevelInit extends AbstractPhase {
 
   protected abstract runInit(): void
 
-  protected abstract fillBuildQueue(): void
+  protected fillBuildQueue(constants: AbstractRCLConstants): void {
+    this.fillStructurePlan(MemoryHandler.getCapRoadLen(this.roomMem), "capRoads", STRUCTURE_ROAD);
+    this.fillStructurePlan(constants.roads, "coreRoads", STRUCTURE_ROAD);
+    this.fillStructurePlan(constants.extensions, "extensions", STRUCTURE_EXTENSION);
+    this.fillStructurePlan(constants.spawns, "spawns", STRUCTURE_SPAWN);
+    this.fillStructurePlan(constants.containers, "containers", STRUCTURE_EXTENSION);
+    this.fillStructurePlan(constants.ramparts, "ramparts", STRUCTURE_RAMPART);
+    this.fillStructurePlan(constants.towers, "towers", STRUCTURE_TOWER);
+    this.fillStructurePlan(constants.storage, "extensions", STRUCTURE_EXTENSION);
+    this.fillStructurePlan(constants.coreLinks, "coreLinks", STRUCTURE_LINK);
+    this.fillStructurePlan(constants.sourceLinks, "sourceLinks", STRUCTURE_LINK);
+    this.fillStructurePlan(constants.controllerLinks, "controllerLinks", STRUCTURE_LINK);
+    this.fillStructurePlan(constants.extractor, "extractors", STRUCTURE_EXTRACTOR);
+    this.fillStructurePlan(constants.labs, "labs", STRUCTURE_LAB);
+    this.fillStructurePlan(constants.terminal, "terminal", STRUCTURE_TERMINAL);
+    this.fillStructurePlan(constants.observer, "observer", STRUCTURE_OBSERVER);
+    this.fillStructurePlan(constants.powerSpawn, "powerSpawn", STRUCTURE_POWER_SPAWN);
+  }
 
   /**
    *

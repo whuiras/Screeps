@@ -1,18 +1,14 @@
 import { AbstractLevelInit } from "../AbstractLevelInit";
-import { RCL2Structures } from "../../RCLConstants";
-import { MemoryHandler } from "../../memory/MemoryHandler";
+import { RCL2Constants } from "../../RCLConstants/RCL2Constants";
 
 export class Stage2Init extends AbstractLevelInit {
 
+  private RCLConstants = new RCL2Constants();
+
   protected runInit(): void {
-    this.fillBuildQueue();
+    this.fillBuildQueue(this.RCLConstants);
   }
 
-  protected fillBuildQueue(): void {
-    this.fillStructurePlan(MemoryHandler.getCapRoadLen(this.roomMem), "capRoads", STRUCTURE_ROAD);
-    this.fillStructurePlan(12, "coreRoads", STRUCTURE_ROAD);
-    this.fillStructurePlan(RCL2Structures.extensions, "extensions", STRUCTURE_EXTENSION);
-  }
 
 
 }

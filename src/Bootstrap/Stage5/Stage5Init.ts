@@ -1,5 +1,4 @@
 import { AbstractLevelInit } from "../AbstractLevelInit";
-import { RCL5Structures } from "../../RCLConstants";
 
 export class Stage5Init extends AbstractLevelInit {
 
