@@ -1,13 +1,12 @@
 import { AbstractLevelInit } from "../AbstractLevelInit";
+import { RCL2Constants } from "../../RCLConstants/RCL2Constants";
 
 export class Stage7Init extends AbstractLevelInit {
 
-  protected runInit(): void {
-    this.fillBuildQueue();
-  }
+  private RCLConstants = new RCL2Constants();
 
-  protected fillBuildQueue(): void {
-    this.fillStructurePlan(10, STRUCTURE_ROAD);
+  protected runInit(): void {
+    this.fillBuildQueue(this.RCLConstants);
   }
 
 
