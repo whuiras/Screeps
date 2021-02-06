@@ -35,7 +35,61 @@ export class MemoryHandler {
   public updateRooms(): void {
 
     if (Memory.initRoom === undefined) {
-      Memory.initRoom = {} as RoomMemory;
+      Memory.initRoom = {
+        buildQueue: [],
+        controller: "",
+        id: "",
+        init: false,
+        lastUpdated: 0,
+        levelInit: false,
+        maxHarvesters: 0,
+        roomPlan: {
+          coreEdges: [],
+          containers: [],
+          extensions: [],
+          roads: [],
+          coreRoads: [],
+          capRoads: [],
+          towers: [],
+          walls: [],
+          ramparts: [],
+          links: [],
+          coreLinks: [],
+          controllerLinks: [],
+          sourceLinks: [],
+          storage: [],
+          spawns: [],
+          extractors: [],
+          labs: [],
+          terminal: [],
+          observer: [],
+          powerSpawn: []
+        },
+        sources: [],
+        spawn: "",
+        structures: {
+          coreEdges: [],
+          containers: [],
+          extensions: [],
+          roads: [],
+          coreRoads: [],
+          capRoads: [],
+          towers: [],
+          walls: [],
+          ramparts: [],
+          links: [],
+          coreLinks: [],
+          controllerLinks: [],
+          sourceLinks: [],
+          storage: [],
+          spawns: [],
+          extractors: [],
+          labs: [],
+          terminal: [],
+          observer: [],
+          powerSpawn: []
+        },
+      }
       this.initRoomMem(Memory.initRoom, Object.values(Game.rooms)[0]);
       console.log(Memory.initRoom);
       console.log(typeof Memory.initRoom);
@@ -48,7 +102,61 @@ export class MemoryHandler {
     const numRooms = Object.keys(Game.rooms).length;
     for (let i = 0; i < numRooms; i++) {
       if (Memory.rooms[i] === undefined) {
-        Memory.rooms[i] = {} as RoomMemory;
+        Memory.rooms[i] = {
+          buildQueue: [],
+          controller: "",
+          id: "",
+          init: false,
+          lastUpdated: 0,
+          levelInit: false,
+          maxHarvesters: 0,
+          roomPlan: {
+            coreEdges: [],
+            containers: [],
+            extensions: [],
+            roads: [],
+            coreRoads: [],
+            capRoads: [],
+            towers: [],
+            walls: [],
+            ramparts: [],
+            links: [],
+            coreLinks: [],
+            controllerLinks: [],
+            sourceLinks: [],
+            storage: [],
+            spawns: [],
+            extractors: [],
+            labs: [],
+            terminal: [],
+            observer: [],
+            powerSpawn: []
+          },
+          sources: [],
+          spawn: "",
+          structures: {
+            coreEdges: [],
+            containers: [],
+            extensions: [],
+            roads: [],
+            coreRoads: [],
+            capRoads: [],
+            towers: [],
+            walls: [],
+            ramparts: [],
+            links: [],
+            coreLinks: [],
+            controllerLinks: [],
+            sourceLinks: [],
+            storage: [],
+            spawns: [],
+            extractors: [],
+            labs: [],
+            terminal: [],
+            observer: [],
+            powerSpawn: []
+          },
+        }
       }
       this.initRoomMem(Memory.rooms[i], Object.values(Game.rooms)[i]);
     }
