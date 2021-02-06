@@ -60,7 +60,7 @@ export abstract class AbstractLevelInit extends AbstractPhase {
               "Could not create construction site at [" +
               coord[0].toString() + "," + coord[1].toString() + "]");
             Logger.logWarn("Returned error code: " + result.toString());
-            i--;
+            // i--;
             continue;
           }
           this.roomMem.buildQueue.push([coord[0], coord[1], type]);
