@@ -193,8 +193,6 @@ export class MemoryHandler {
       roomMem.sources.push(source.id);
     }
 
-    roomMem.maxHarvesters = this.calcMaxRoomHarvesters(room);
-
     const roomPlanner: RoomPlanner = new RoomPlanner(room.name as Id<Room>);
     roomPlanner.planRoom();
     roomMem.init = true;
